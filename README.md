@@ -154,5 +154,3 @@ git commit -m "your message"
 # Push branch
 git push origin your-branch-name
 ```
-
----
