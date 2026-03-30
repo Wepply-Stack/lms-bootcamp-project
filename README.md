@@ -7,7 +7,7 @@ This is a fullstack Learning Management System (LMS) built with:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 project-root/
@@ -17,16 +17,16 @@ project-root/
 
 ---
 
-## 📥 Clone the Repository
+## Clone the Repository
 
 ```bash
-git clone <your-repo-url>
+git clone <https://github.com/Wepply-Stack/lms-bootcamp-project.git>
 cd lms-bootcamp-project
 ```
 
 ---
 
-## 🌿 Branching Strategy
+## Branching Strategy
 
 Each team member should work on their own branch.
 
@@ -42,7 +42,7 @@ git checkout -b frontend/your-name
 git checkout -b backend/your-name
 ```
 
-### ✅ Example
+### Example
 
 ```bash
 git checkout -b frontend/john
@@ -51,7 +51,7 @@ git checkout -b backend/jane
 
 ---
 
-## ⚙️ Prerequisites
+## Prerequisites
 
 Make sure you have installed:
 
@@ -61,14 +61,15 @@ Make sure you have installed:
 
 ---
 
-# 🚀 Backend Setup (Django DRF)
+# Backend Setup (Django DRF)
 
 ```bash
 cd backend
 
 # Create virtual environment
 python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
+source venv/bin/activate   #MacOS
+venv\Scripts\activate    # Windows
 
 # Install dependencies
 pip install django djangorestframework django-cors-headers
@@ -81,11 +82,11 @@ python manage.py runserver
 ```
 
 Backend runs on:
-👉 http://127.0.0.1:8000
+http://127.0.0.1:8000
 
 ---
 
-# 🎨 Frontend Setup (React + Shadcn)
+# Frontend Setup (React + Shadcn)
 
 ```bash
 cd frontend
@@ -98,11 +99,11 @@ npm run dev
 ```
 
 Frontend runs on:
-👉 http://localhost:5173
+http://localhost:5173
 
 ---
 
-## 🔗 Connecting Frontend & Backend
+## Connecting Frontend & Backend
 
 Make sure Django allows CORS in `config/settings.py`:
 
@@ -113,12 +114,12 @@ CORS_ALLOW_ALL_ORIGINS = True
 API base URL:
 
 ```
-http://127.0.0.1:8000/api/
+http://127.0.0.1:8000/
 ```
 
 ---
 
-## 🧱 Tech Stack
+## Tech Stack
 
 - React (Vite)
 - Shadcn UI (Radix + TailwindCSS)
@@ -127,7 +128,7 @@ http://127.0.0.1:8000/api/
 
 ---
 
-## 📌 Notes
+## Notes
 
 - Use Node 18/20 for best compatibility with Shadcn
 - Add components as needed:
@@ -138,7 +139,7 @@ http://127.0.0.1:8000/api/
 
 ---
 
-## 🔁 Basic Git Workflow
+## Basic Git Workflow
 
 ```bash
 # Pull latest changes
@@ -155,7 +156,3 @@ git push origin your-branch-name
 ```
 
 ---
-
-## 👨‍💻 Contributors
-
-Bootcamp Team
