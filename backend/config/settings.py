@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'core',
+    'auth',
+    'admin',
+    'courses',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -80,8 +84,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'lms_db',
+        'USER': 'lms_user',
+        'PASSWORD': 'Admin@123',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -122,4 +130,18 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# CORS settings
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Custom user model
+AUTH_USER_MODEL = 'authentication.User'
+
+# Django REST Framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'authentication.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
