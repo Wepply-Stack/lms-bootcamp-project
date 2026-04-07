@@ -45,12 +45,8 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'core',
-<<<<<<< HEAD
     'apps.auth_app.apps.AuthAppConfig',
     'apps.admin_app',
-=======
-    'api.courses',
->>>>>>> 4e53e36e9850f73c864cf7aef074e1fe650d1c22
 ]
 
 MIDDLEWARE = [
@@ -89,17 +85,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-<<<<<<< HEAD
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'Webbly_db',
         'USER': 'Webbly_user',
         'PASSWORD': 'Admin123',
         'HOST': 'localhost',
         'PORT': '5432',
-=======
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
->>>>>>> 4e53e36e9850f73c864cf7aef074e1fe650d1c22
     }
 }
 
@@ -143,7 +134,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS settings
-<<<<<<< HEAD
 CORS_ALLOW_ALL_ORIGINS = True
 
 # Custom user model
@@ -172,6 +162,3 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
 }
-=======
-CORS_ALLOW_ALL_ORIGINS = True
->>>>>>> 4e53e36e9850f73c864cf7aef074e1fe650d1c22
