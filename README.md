@@ -2,8 +2,8 @@
 
 This is a fullstack Learning Management System (LMS) built with:
 
-- **Frontend:** React (Vite) + Shadcn UI (JSX)
-- **Backend:** Django + Django REST Framework (DRF)
+* **Frontend:** React (Vite) + Shadcn UI (JSX)
+* **Backend:** Django + Django REST Framework (DRF)
 
 ---
 
@@ -20,7 +20,7 @@ project-root/
 ## Clone the Repository
 
 ```bash
-git clone <https://github.com/Wepply-Stack/lms-bootcamp-project.git>
+git clone https://github.com/Wepply-Stack/lms-bootcamp-project.git
 cd lms-bootcamp-project
 ```
 
@@ -55,9 +55,9 @@ git checkout -b backend/jane
 
 Make sure you have installed:
 
-- Node.js (v18 or v20 recommended)
-- Python (3.10+)
-- pip / virtualenv
+* Node.js (**v18, v20 recommended** | v22 works with limitations)
+* Python (3.10+)
+* pip / virtualenv
 
 ---
 
@@ -68,8 +68,8 @@ cd backend
 
 # Create virtual environment
 python -m venv venv
-source venv/bin/activate   #MacOS
-venv\Scripts\activate    # Windows
+source venv/bin/activate   # MacOS
+venv\Scripts\activate      # Windows
 
 # Install dependencies
 pip install django djangorestframework django-cors-headers
@@ -86,15 +86,100 @@ http://127.0.0.1:8000
 
 ---
 
-# Frontend Setup (React + Shadcn)
+# Frontend Setup (React + Vite + Shadcn)
+
+## Step 1: Navigate to frontend
 
 ```bash
 cd frontend
+```
 
-# Install dependencies
+---
+
+## Step 2: Install dependencies
+
+```bash
 npm install
+```
 
-# Start dev server
+---
+
+## Step 3: Tailwind CSS Setup (IMPORTANT)
+
+If not already configured:
+
+```bash
+npm install -D tailwindcss@3.4.1 postcss autoprefixer
+npx tailwindcss init -p
+```
+
+### Update `tailwind.config.js`
+
+```
+export default {
+  content: ["./index.html", "./src/**/*.{js,jsx}"],
+  theme: { extend: {} },
+  plugins: [],
+}
+```
+
+### Update `src/index.css`
+
+```
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+---
+
+## Step 4: Setup Import Alias
+
+Create `jsconfig.json`:
+
+```
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  }
+}
+```
+
+---
+
+## Step 5: Initialize Shadcn UI
+
+```bash
+npx shadcn@latest init
+```
+
+---
+
+## Step 6: Install Components
+
+⚠️ If using Node v22:
+**DO NOT use `--all`**
+
+Instead install manually:
+
+```bash
+npx shadcn@latest add button
+npx shadcn@latest add card
+npx shadcn@latest add input
+npx shadcn@latest add form
+npx shadcn@latest add table
+npx shadcn@latest add dialog
+npx shadcn@latest add dropdown-menu
+```
+
+---
+
+## Step 7: Run Frontend
+
+```bash
 npm run dev
 ```
 
@@ -121,21 +206,19 @@ http://127.0.0.1:8000/
 
 ## Tech Stack
 
-- React (Vite)
-- Shadcn UI (Radix + TailwindCSS)
-- Django
-- Django REST Framework
+* React (Vite)
+* Tailwind CSS
+* Shadcn UI (Radix)
+* Django
+* Django REST Framework
 
 ---
 
 ## Notes
 
-- Use Node 18/20 for best compatibility with Shadcn
-- Add components as needed:
-
-  ```
-  npx shadcn@latest add button
-  ```
+* Node v22 works but has limitations with some CLI tools
+* Use Node v18/v20 for best compatibility
+* Always install only needed components in Shadcn
 
 ---
 
@@ -144,6 +227,9 @@ http://127.0.0.1:8000/
 ```bash
 # Pull latest changes
 git pull origin main
+
+# Create your branch
+git checkout -b frontend/your-name
 
 # Add changes
 git add .
