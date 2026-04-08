@@ -1,29 +1,16 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 from .models import User
 
-
-class CustomUserAdmin(UserAdmin):
-    model = User
-
-    list_display = ('email', 'role', 'is_staff', 'is_active')
-    list_filter = ('role', 'is_staff', 'is_active')
-
+@admin.register(User)
+class CustomUserAdmin(admin.ModelAdmin):
+    list_display = ['id', 'email', 'first_name', 'last_name', 'role', 'created_at']
+    list_filter = ['role', 'created_at']
+    search_fields = ['email', 'first_name', 'last_name']
+    readonly_fields = ['created_at']
+    
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Permissions', {'fields': ('role', 'is_staff', 'is_active', 'is_superuser')}),
-        ('Important dates', {'fields': ('last_login',)}),
+        ('Personal Info', {'fields': ('first_name', 'last_name', 'phone_number', 'position')}),
+        ('Permissions', {'fields': ('role', 'is_active')}),
+        ('Important dates', {'fields': ('created_at',)}),
     )
-
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2', 'role', 'is_staff', 'is_active')}
-        ),
-    )
-
-    search_fields = ('email',)
-    ordering = ('email',)
-
-
-admin.site.register(User, CustomUserAdmin)
