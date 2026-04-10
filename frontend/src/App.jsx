@@ -1,6 +1,6 @@
-import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom"
-import Home from "./pages/Home"
-import MainLayout from "./layout/MainLayout"
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
+import Home from "./pages/Home";
+import MainLayout from "./layout/MainLayout";
 
 
 function App() {
@@ -8,6 +8,7 @@ function App() {
     createRoutesFromElements(
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Home />} />
+        
       </Route>
     )
   );
