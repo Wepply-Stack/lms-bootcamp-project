@@ -37,7 +37,6 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=100, blank=True, default='')
     phone_number = models.CharField(max_length=20, blank=True, default='')
     position = models.CharField(max_length=100, blank=True, default='')
-    password_hash = models.CharField(max_length=255)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='employee')
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
@@ -49,8 +48,6 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = []
     
     def set_password(self, raw_password):
-        from django.contrib.auth.hashers import make_password
-        self.password_hash = make_password(raw_password)
         super().set_password(raw_password)
     
     def __str__(self):
