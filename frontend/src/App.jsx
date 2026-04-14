@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import MainLayout from "./layout/MainLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
+import EmployeeDashboard from "./pages/EmployeeDashboard";
 import AdminOverview from "./pages/AdminOverview";
 
 function App() {
@@ -25,9 +26,19 @@ function App() {
         >
           <Route index element={<AdminOverview />} />
         </Route>
-      </Route>,
-    ),
-  );
+        <Route
+          path="employee"
+          element={
+            <ProtectedRoute allowRoles={["employee"]}>
+              <EmployeeDashboard />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<h2>Employee Dashboard</h2>} />
+        </Route>
+      </Route>
+      )
+  )
   return <RouterProvider router={router} />;
 }
 
