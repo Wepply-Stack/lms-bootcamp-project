@@ -1,11 +1,11 @@
 import axios from "axios";
 
-const API_URL = "";// To be set
+const API_URL = "http://127.0.0.1:8000/api/auth/"; // To be set
 
 // Create instance
 const axiosInstance = axios.create({
   baseURL: API_URL,
-  withCredentials: true, // 🔥 send cookies
+  withCredentials: true, // send cookies
 });
 
 // Store access token in memory
@@ -23,7 +23,7 @@ axiosInstance.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // Response interceptor (handle refresh)
@@ -33,14 +33,17 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
 
     // If 401 and not already retried
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/login/") &&
+      !originalRequest.includes("/token/refresh/")
+    ) {
       try {
-        const res = await axios.post(
-          `${API_URL}/token/refresh/`,
+        const res = await axiosInstance.post(
+          `/token/refresh/`,
           {},
-          { withCredentials: true }
+          { withCredentials: true },
         );
 
         const newAccessToken = res.data.access;
@@ -56,7 +59,7 @@ axiosInstance.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axiosInstance;

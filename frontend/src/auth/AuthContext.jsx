@@ -7,45 +7,40 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   const login = async (credentials) => {
-    await loginUser(credentials);
+    const data = await loginUser(credentials);
+    setAccessToken(data.access);
     setIsAuthenticated(true);
+
+    if (data.user) {
+      setUser(data.user);
+    }
+    return data;
   };
 
   const logout = async () => {
     await logoutUser();
     setIsAuthenticated(false);
+    setAccessToken(null);
+    setUser(null);
   };
 
   // Restore session on load
   useEffect(() => {
-    const initAuth = async () => {
-      try {
-        const res = await axiosInstance.post("/token/refresh/");
-
-        setAccessToken(res.data.access);
-        setIsAuthenticated(true);
-      } catch {
-        setIsAuthenticated(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    initAuth();
+    setLoading(false);
   }, []);
 
   const contextData = {
     isAuthenticated,
+    user,
     login,
     logout,
     loading,
   };
 
   return (
-    <AuthContext.Provider value={contextData}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
   );
 };

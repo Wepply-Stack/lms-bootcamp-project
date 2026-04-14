@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .serializers import LoginSerializer, UserSerializer
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from .models import User
 
 class LoginView(APIView):
@@ -39,8 +40,36 @@ class LoginView(APIView):
         refresh['user_id'] = user.id
         refresh['role'] = user.role
         
-        return Response({
+        response = Response({
             'access': str(refresh.access_token),
             'refresh': str(refresh),
             'user': UserSerializer(user).data
         })
+
+        response.set_cookie(
+            key='refresh_token',
+            value=str(refresh),
+            httponly=True,
+            secure=False,  # Set to True in production with HTTPS
+            samesite='Lax',
+            path='/api/auth/token/refresh/'
+        )
+        return response
+    
+class CookieTokenRefreshView(APIView):
+    permission_classes = []
+
+    def post(self, request):
+        refresh_token = request.COOKIES.get("refresh_token")
+
+        if not refresh_token:
+            return Response({"error": "No refresh token"}, status=401)
+
+        serializer = TokenRefreshSerializer(data={"refresh": refresh_token})
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except Exception:
+            return Response({"error": "Invalid refresh"}, status=401)
+
+        return Response(serializer.validated_data)
