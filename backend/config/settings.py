@@ -86,8 +86,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Webbly_db',
-        'USER': 'Webbly_user',
+        'NAME': 'webbly_db',
+        'USER': 'webbly_user',
         'PASSWORD': 'Admin123',
         'HOST': 'localhost',
         'PORT': '5432',
@@ -134,7 +134,17 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+]
 
 # Custom user model
 AUTH_USER_MODEL = 'auth_app.User'
