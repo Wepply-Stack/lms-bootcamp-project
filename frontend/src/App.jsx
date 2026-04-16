@@ -10,6 +10,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import AdminOverview from "./pages/AdminOverview";
+import EmployeeOverview from "./pages/EmployeeOverview";
 
 function App() {
   const router = createBrowserRouter(
@@ -34,7 +35,7 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<h2>Employee Dashboard</h2>} />
+          <Route index element={<EmployeeOverview />} />
         </Route>
       </Route>
       )
