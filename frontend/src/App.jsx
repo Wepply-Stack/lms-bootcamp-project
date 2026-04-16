@@ -11,14 +11,16 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import AdminOverview from "./pages/AdminOverview";
+import EmployeeOverview from"./pages/EmployeeOverview";
+import Login from "./pages/Login";
 
 
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
 
-      <Route path="/">
-        <Route index element={<Home />} />
+      <Route path="/" element={<MainLayout />}>
+        <Route index element={<Login />} />
         <Route
           path="admin"
           element={
@@ -29,15 +31,17 @@ function App() {
         >
           <Route index element={<AdminOverview />} />
         </Route>
+
+
         <Route
           path="employee"
           element={
-            <ProtectedRoute allowRoles={["employee"]}>
+            //<ProtectedRoute allowRoles={["employee"]}>
               <EmployeeDashboard />
-            </ProtectedRoute>
+            // </ProtectedRoute>
           }
         >
-          <Route index element={<h2>Employee Dashboard</h2>} />
+          <Route index element={<EmployeeOverview />} />
         </Route>
       </Route>
       )
