@@ -1,11 +1,10 @@
-
 import {
   createBrowserRouter,
   createRoutesFromElements,
   Route,
   RouterProvider,
 } from "react-router-dom";
-import Home from "./pages/Home";
+import Login from "./pages/Login";
 import MainLayout from "./layout/MainLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -16,7 +15,6 @@ import EmployeeOverview from "./pages/EmployeeOverview";
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
-
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Login />} />
         <Route
@@ -30,21 +28,19 @@ function App() {
           <Route index element={<AdminOverview />} />
         </Route>
 
-
         <Route
           path="employee"
           element={
             //<ProtectedRoute allowRoles={["employee"]}>
-              <EmployeeDashboard />
+            <EmployeeDashboard />
             // </ProtectedRoute>
           }
         >
           <Route index element={<EmployeeOverview />} />
         </Route>
-      </Route>
-      )
-
-  )
+      </Route>,
+    ),
+  );
   return <RouterProvider router={router} />;
 }
 

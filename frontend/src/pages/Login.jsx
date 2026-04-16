@@ -1,17 +1,31 @@
-
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useAuth from "@/auth/useAuth";
+
+
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formdata, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const { login, user, isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState(null);
 
-  const handleSubmit = (e) => {
+  function handleChange(e) {
+  setFormData({ ...formdata, [e.target.name]: e.target.value });
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => setLoading(false), 2000);
+    const data = await login(formdata);
+    const role = data?.user?.role;
+    if (role === "admin") {
+      navigate("/admin");
+    } else if (role === "employee") {
+      navigate("/employee");
+    }
   };
 
   return (
@@ -51,8 +65,9 @@ export default function Login() {
                     <input
                       type="email"
                       required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      name="email"
+                      value={formdata.email}
+                      onChange={handleChange}
                       onFocus={() => setFocused("email")}
                       onBlur={() => setFocused(null)}
                       placeholder="ENTER EMAIL"
@@ -69,8 +84,9 @@ export default function Login() {
                       <input
                         type={showPassword ? "text" : "password"}
                         required
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        name="password"
+                        value={formdata.password}
+                        onChange={handleChange}
                         onFocus={() => setFocused("password")}
                         onBlur={() => setFocused(null)}
                         placeholder="••••••••"
