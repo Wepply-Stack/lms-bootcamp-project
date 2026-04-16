@@ -1,9 +1,6 @@
-import React from 'react'
-
-function AdminOverview() {
-  return (
-    <div>AdminOverview</div>
-  )
+import React, { Component } from 'react';
+const AdminOverview = () => {
+    return ( <div>AdminOverview</div> );
 }
-
-export default AdminOverview
+ 
+export default AdminOverview;

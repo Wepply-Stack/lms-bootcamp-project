@@ -1,3 +1,4 @@
+
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -15,8 +16,9 @@ import EmployeeOverview from "./pages/EmployeeOverview";
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/">
-        <Route index element={<Home />} />
+
+      <Route path="/" element={<MainLayout />}>
+        <Route index element={<Login />} />
         <Route
           path="admin"
           element={
@@ -27,18 +29,21 @@ function App() {
         >
           <Route index element={<AdminOverview />} />
         </Route>
+
+
         <Route
           path="employee"
           element={
-            <ProtectedRoute allowRoles={["employee"]}>
+            //<ProtectedRoute allowRoles={["employee"]}>
               <EmployeeDashboard />
-            </ProtectedRoute>
+            // </ProtectedRoute>
           }
         >
           <Route index element={<EmployeeOverview />} />
         </Route>
       </Route>
       )
+
   )
   return <RouterProvider router={router} />;
 }
