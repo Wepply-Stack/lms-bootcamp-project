@@ -31,9 +31,9 @@ function App() {
         <Route
           path="employee"
           element={
-            //<ProtectedRoute allowRoles={["employee"]}>
-            <EmployeeDashboard />
-            // </ProtectedRoute>
+            <ProtectedRoute allowRoles={["employee"]}>
+              <EmployeeDashboard />
+            </ProtectedRoute>
           }
         >
           <Route index element={<EmployeeOverview />} />
