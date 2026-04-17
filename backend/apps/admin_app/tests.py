@@ -9,7 +9,6 @@ from apps.admin_app import views
 class AdminAccessTests(TestCase):
     
     def setUp(self):
-        # Resets DB and counter value to 1
         views.courses_db.clear()
         views.course_id_counter = 1
         self.client = APIClient()
@@ -105,7 +104,7 @@ class AdminAccessTests(TestCase):
         """Test that admin users can list all courses"""
         # First create a course
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.admin_token}')
-        self.client.post('/api/courses', {'title': 'Course 1'})
+        self.client.post('/api/courses/', {'title': 'Course 1'})
         
         # Then list courses
         response = self.client.get('/api/courses/')
