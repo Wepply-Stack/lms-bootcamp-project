@@ -1,9 +1,4 @@
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./pages/Login";
 import MainLayout from "./layout/MainLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -12,35 +7,39 @@ import EmployeeDashboard from "./pages/EmployeeDashboard";
 import AdminOverview from "./pages/AdminOverview";
 import EmployeeOverview from "./pages/EmployeeOverview";
 
-function App() {
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <Route path="/" element={<MainLayout />}>
-        <Route index element={<Login />} />
-        <Route
-          path="admin"
-          element={
-            <ProtectedRoute allowRoles={["admin"]}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<AdminOverview />} />
-        </Route>
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <MainLayout />,
+    children: [
+      { index: true, element: <Login /> },
+      {
+        path: "admin",
+        element: (
+          <ProtectedRoute allowRoles={["admin"]}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        ),
+        children: [
+          { index: true, element: <AdminOverview /> }
+        ]
+      },
+      {
+        path: "employee",
+        element: (
+          <ProtectedRoute allowRoles={["employee"]}>
+            <EmployeeDashboard />
+          </ProtectedRoute>
+        ),
+        children: [
+          { index: true, element: <EmployeeOverview /> }
+        ]
+      }
+    ]
+  }
+]);
 
-        <Route
-          path="employee"
-          element={
-            <ProtectedRoute allowRoles={["employee"]}>
-              <EmployeeDashboard />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<EmployeeOverview />} />
-        </Route>
-      </Route>,
-    ),
-  );
+function App() {
   return <RouterProvider router={router} />;
 }
 
