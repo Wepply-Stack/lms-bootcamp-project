@@ -5,36 +5,29 @@ export default function CreateCourse() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(2); // default to Course Material like screenshots
   const [courseData, setCourseData] = useState({
     title: "",
     description: "",
     category: "",
     thumbnail: null,
   });
-
-
-const [modules, setModules] = useState([
-  {
-    id: 1,
-    name: "Module 1",
-    objective: "",
-    lessons: [
-      { id: 1, name: "Lesson 1", objective: "" },
-      { id: 2, name: "Lesson 2", objective: "" },
-    ],
-  },
-]);
-
-// which module/lesson is currently selected in the left sidebar
-const [selectedModuleId, setSelectedModuleId] = useState(1);
-const [selectedLessonId, setSelectedLessonId] = useState(1);
-
-
-
-
-
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
+
+  const [modules, setModules] = useState([
+    {
+      id: 1,
+      name: "Module 1",
+      objective: "",
+      lessons: [
+        { id: 1, name: "Lesson 1", objective: "", content: "" },
+        { id: 2, name: "Lesson 2", objective: "", content: "" },
+      ],
+    },
+  ]);
+
+  const [selectedModuleId, setSelectedModuleId] = useState(1);
+  const [selectedLessonId, setSelectedLessonId] = useState(1);
 
   const steps = useMemo(
     () => [
@@ -45,24 +38,35 @@ const [selectedLessonId, setSelectedLessonId] = useState(1);
     []
   );
 
-  
+  const selectedModule = useMemo(
+    () => modules.find((m) => m.id === selectedModuleId) ?? null,
+    [modules, selectedModuleId]
+  );
+
+  const selectedLesson = useMemo(() => {
+    if (!selectedModule) return null;
+    return selectedModule.lessons.find((l) => l.id === selectedLessonId) ?? null;
+  }, [selectedModule, selectedLessonId]);
 
   const handleNext = () => {
-    if (currentStep < 3) setCurrentStep((s) => s + 1);
-    else handlePublish();
+    setCurrentStep((prev) => {
+      if (prev < 3) return prev + 1;
+      handlePublish();
+      return prev;
+    });
   };
 
-  const handleBack = () => {
-    if (currentStep > 1) setCurrentStep((s) => s - 1);
+  const handleBackStep = () => {
+    setCurrentStep((prev) => (prev > 1 ? prev - 1 : prev));
   };
 
   const handleSaveDraft = () => {
-    console.log("Course saved as draft:", courseData);
+    console.log("Draft:", { courseData, modules });
     navigate("/admin/dashboard");
   };
 
   const handlePublish = () => {
-    console.log("Course published:", courseData);
+    console.log("Publish:", { courseData, modules });
     alert("Course published successfully!");
     navigate("/admin/dashboard");
   };
@@ -79,397 +83,585 @@ const [selectedLessonId, setSelectedLessonId] = useState(1);
   };
 
   const handleAddModule = () => {
-  setModules((prev) => {
-    const nextId = prev.length ? Math.max(...prev.map((m) => m.id)) + 1 : 1;
+    setModules((prev) => {
+      const nextId = prev.length ? Math.max(...prev.map((m) => m.id)) + 1 : 1;
+      const newModule = {
+        id: nextId,
+        name: `Module ${nextId}`,
+        objective: "",
+        lessons: [],
+      };
+      setSelectedModuleId(nextId);
+      setSelectedLessonId(null);
+      return [...prev, newModule];
+    });
+  };
 
-    const newModule = {
-      id: nextId,
-      name: `Module ${nextId}`,
-      objective: "",
-      lessons: [],
-    };
-
-    // auto-select the newly created module (like the screenshot UX)
-    setSelectedModuleId(nextId);
-    setSelectedLessonId(null);
-
-    return [...prev, newModule];
-  });
-};
-
-
-
-const handleDeleteModule = (id) => {
-  setModules((prev) => {
-    const filtered = prev.filter((m) => m.id !== id);
-
-    if (selectedModuleId === id) {
-      const fallbackModule = filtered[0] ?? null;
-      setSelectedModuleId(fallbackModule?.id ?? null);
-      setSelectedLessonId(fallbackModule?.lessons?.[0]?.id ?? null);
-    }
-
-    return filtered;
-  });
-};
+  const handleDeleteModule = (id) => {
+    setModules((prev) => {
+      const filtered = prev.filter((m) => m.id !== id);
+      if (selectedModuleId === id) {
+        const fallback = filtered[0] ?? null;
+        setSelectedModuleId(fallback?.id ?? null);
+        setSelectedLessonId(fallback?.lessons?.[0]?.id ?? null);
+      }
+      return filtered;
+    });
+  };
 
   const handleAddLesson = () => {
-    const newLesson = {
-      id: lessons.length + 1,
-      name: `Lesson ${lessons.length + 1}`,
-    };
-    setLessons([...lessons, newLesson]);
+    if (!selectedModuleId) return;
+
+    setModules((prev) =>
+      prev.map((m) => {
+        if (m.id !== selectedModuleId) return m;
+
+        const nextLessonId = m.lessons.length
+          ? Math.max(...m.lessons.map((l) => l.id)) + 1
+          : 1;
+
+        const newLesson = {
+          id: nextLessonId,
+          name: `Lesson ${nextLessonId}`,
+          objective: "",
+          content: "",
+        };
+
+        setSelectedLessonId(nextLessonId);
+        return { ...m, lessons: [...m.lessons, newLesson] };
+      })
+    );
   };
 
-  const handleDeleteLesson = (id) => {
-    setLessons(lessons.filter((l) => l.id !== id));
+  const handleDeleteLesson = (lessonId) => {
+    if (!selectedModuleId) return;
+
+    setModules((prev) =>
+      prev.map((m) => {
+        if (m.id !== selectedModuleId) return m;
+        const nextLessons = m.lessons.filter((l) => l.id !== lessonId);
+        if (selectedLessonId === lessonId) {
+          setSelectedLessonId(nextLessons[0]?.id ?? null);
+        }
+        return { ...m, lessons: nextLessons };
+      })
+    );
   };
 
-  const StepHeader = () => (
-    <div className="mb-6">
-      <h1 className="text-[18px] font-semibold text-[#0F2F2A]">
-        {steps[currentStep - 1].name}
-      </h1>
-      {currentStep === 1 && (
-        <p className="mt-1 text-[12px] text-gray-500">
-          Provide the basic course details below
-        </p>
-      )}
+  const updateModule = (patch) => {
+    if (!selectedModuleId) return;
+    setModules((prev) =>
+      prev.map((m) => (m.id === selectedModuleId ? { ...m, ...patch } : m))
+    );
+  };
+
+  const updateLesson = (lessonId, patch) => {
+    if (!selectedModuleId) return;
+    setModules((prev) =>
+      prev.map((m) => {
+        if (m.id !== selectedModuleId) return m;
+        return {
+          ...m,
+          lessons: m.lessons.map((l) =>
+            l.id === lessonId ? { ...l, ...patch } : l
+          ),
+        };
+      })
+    );
+  };
+
+  const StepTabs = () => (
+    <div className="mb-4 flex flex-wrap gap-2">
+      {steps.map((s) => {
+        const active = s.number === currentStep;
+        return (
+          <button
+            key={s.number}
+            type="button"
+            onClick={() => setCurrentStep(s.number)}
+            className={`px-3 py-2 rounded-md text-[12px] border transition-colors ${
+              active
+                ? "bg-[#0F2F2A] text-white border-[#0F2F2A]"
+                : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+            }`}
+          >
+            {s.name}
+          </button>
+        );
+      })}
     </div>
   );
 
-  const renderStepContent = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left column */}
-            <div className="lg:col-span-2 space-y-5">
-              {/* Course Title */}
-              <div>
-                <label className="block text-[13px] font-semibold text-[#0F2F2A] mb-2">
-                  <span className="text-red-500">*</span> Course Title
-                </label>
-                <input
-                  type="text"
-                  className="w-full h-10 px-3 border border-gray-300 rounded-md bg-white text-sm outline-none focus:ring-2 focus:ring-green-600/20 focus:border-green-700"
-                  value={courseData.title}
-                  onChange={(e) =>
-                    setCourseData({ ...courseData, title: e.target.value })
-                  }
-                />
-              </div>
+  const Sidebar = () => (
+    <aside className="w-full lg:w-[260px] shrink-0">
+      <div className="text-[11px] text-gray-500 mb-2">Draft</div>
 
-              {/* Course Description */}
-              <div>
-                <label className="block text-[13px] font-semibold text-[#0F2F2A] mb-2">
-                  <span className="text-red-500">*</span> Course Description
-                </label>
-                <textarea
-                  rows={6}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-sm outline-none resize-none focus:ring-2 focus:ring-green-600/20 focus:border-green-700"
-                  value={courseData.description}
-                  onChange={(e) =>
-                    setCourseData({
-                      ...courseData,
-                      description: e.target.value,
-                    })
-                  }
-                />
-              </div>
+      <div className="flex items-center justify-between mb-3">
+        <div className="text-[13px] font-semibold text-gray-900">
+          Course Material
+        </div>
+      </div>
 
-              {/* Course Category */}
-              <div>
-                <label className="block text-[13px] font-semibold text-[#0F2F2A] mb-2">
-                  <span className="text-red-500">*</span> Course Category
-                </label>
-                <select
-                  className="w-full h-10 px-3 border border-gray-300 rounded-md bg-white text-sm outline-none focus:ring-2 focus:ring-green-600/20 focus:border-green-700"
-                  value={courseData.category}
-                  onChange={(e) =>
-                    setCourseData({ ...courseData, category: e.target.value })
-                  }
-                >
-                  <option value=""> </option>
-                  <option value="tech">Technology</option>
-                  <option value="business">Business</option>
-                  <option value="design">Design</option>
-                </select>
-              </div>
-            </div>
+      <button
+        type="button"
+        onClick={handleAddModule}
+        className="w-full h-8 rounded-md border border-gray-200 bg-white text-[11px] font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2"
+      >
+        <span className="text-[14px] leading-none">+</span> Add Module
+      </button>
 
-            {/* Right column */}
-            <div>
-              <label className="block text-[13px] font-semibold text-[#0F2F2A] mb-2">
-                <span className="text-red-500">*</span> Course Thumbnail
-              </label>
-
-              <div className="border border-green-300 bg-green-100/70 rounded-md p-4">
-                <div className="h-[92px] flex items-center justify-center">
-                  {thumbnailPreview ? (
-                    <img
-                      src={thumbnailPreview}
-                      alt="Preview"
-                      className="w-full h-[92px] object-cover rounded"
-                    />
-                  ) : (
-                    <div className="text-center">
-                      <p className="text-[10px] text-gray-600 mb-2">
-                        Upload Image .jpeg, .png
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="px-8 h-9 rounded-full bg-[#0F2F2A] text-white text-sm font-medium hover:bg-[#0b241f] transition-colors"
-                      >
-                        Upload
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleThumbnailChange}
-                />
-              </div>
-
-              <div className="mt-2 flex items-center justify-between text-[12px] text-gray-600">
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="hover:text-gray-800"
-                >
-                  / Edit Cover Image
-                </button>
-                <button
-                  type="button"
-                  className="hover:text-gray-800"
-                  onClick={() => {
-                    // simple preview behavior: open image in new tab if exists
-                    if (thumbnailPreview) window.open(thumbnailPreview, "_blank");
-                  }}
-                >
-                  Preview Image
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 2:
-        return (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                Course Structure
-              </h3>
-              <div className="bg-white border border-gray-300 rounded-lg p-4 space-y-2">
-                {modules.map((module) => (
-                  <div key={module.id} className="flex items-center gap-3 mb-4">
-                    <input
-                      type="text"
-                      value={module.name}
-                      onChange={(e) => {
-                        const updated = modules.map((m) =>
-                          m.id === module.id
-                            ? { ...m, name: e.target.value }
-                            : m
-                        );
-                        setModules(updated);
+      <div className="mt-3 space-y-3">
+        {modules.map((m) => {
+          const active = m.id === selectedModuleId;
+          return (
+            <div
+              key={m.id}
+              className={`rounded-md border ${
+                active ? "border-gray-400" : "border-gray-200"
+              } bg-white`}
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedModuleId(m.id);
+                  setSelectedLessonId(m.lessons?.[0]?.id ?? null);
+                }}
+                className="w-full px-3 py-2 text-left"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <div className="text-[11px] font-semibold text-gray-900 truncate">
+                    {m.name}
+                  </div>
+                  <div className="flex items-center gap-2 text-[10px] text-gray-500">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddLesson();
                       }}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded"
-                    />
-                    <button className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded">
-                      ✎
+                      className="hover:text-gray-700"
+                      title="Add lesson"
+                    >
+                      Add
                     </button>
                     <button
-                      onClick={() => handleDeleteModule(module.id)}
-                      className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded"
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteModule(m.id);
+                      }}
+                      className="hover:text-gray-700"
+                      title="Delete module"
                     >
-                      🗑
+                      Delete
                     </button>
                   </div>
-                ))}
-              </div>
-              <button
-                onClick={handleAddModule}
-                className="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-              >
-                + Add Module
+                </div>
               </button>
-            </div>
 
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                Enter Learning Objective
-              </h3>
-              <textarea
-                placeholder="Enter learning objectives..."
-                rows="4"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none resize-none"
-              />
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                Lessons
-              </h3>
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-2 px-4 font-medium text-gray-700">
-                      ID
-                    </th>
-                    <th className="text-left py-2 px-4 font-medium text-gray-700">
-                      Lesson Name
-                    </th>
-                    <th className="text-right py-2 px-4"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {lessons.map((lesson) => (
-                    <tr key={lesson.id} className="border-b hover:bg-gray-50">
-                      <td className="py-2 px-4 text-gray-600">{lesson.id}</td>
-                      <td className="py-2 px-4 text-gray-600">{lesson.name}</td>
-                      <td className="text-right py-2 px-4">
-                        <button
-                          onClick={() => handleDeleteLesson(lesson.id)}
-                          className="text-gray-600 hover:text-gray-800"
+              <div className="px-3 pb-2 space-y-2">
+                {m.lessons.map((l) => {
+                  const lessonActive =
+                    m.id === selectedModuleId && l.id === selectedLessonId;
+                  return (
+                    <button
+                      key={l.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedModuleId(m.id);
+                        setSelectedLessonId(l.id);
+                      }}
+                      className={`w-full rounded border px-2 py-1 text-left text-[10px] ${
+                        lessonActive
+                          ? "border-gray-400 bg-gray-50"
+                          : "border-gray-200 bg-white hover:bg-gray-50"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="truncate">{l.name}</span>
+                        <span
+                          className="text-gray-500 hover:text-gray-700"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedModuleId(m.id);
+                            handleDeleteLesson(l.id);
+                          }}
+                          title="Delete lesson"
                         >
-                          ⋮
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <button
-                onClick={handleAddLesson}
-                className="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-              >
-                + Add Lesson
-              </button>
-            </div>
-          </div>
-        );
+                          Delete
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
 
-      case 3:
-        return (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                Review & Publish
-              </h3>
-              <div className="bg-gray-50 border border-gray-300 rounded-lg p-6 space-y-4">
-                <div>
-                  <p className="text-sm text-gray-600">Course Title</p>
-                  <p className="text-lg font-semibold text-gray-800">
-                    {courseData.title || "Not set"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Description</p>
-                  <p className="text-gray-700">
-                    {courseData.description || "Not set"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Category</p>
-                  <p className="text-gray-700">
-                    {courseData.category || "Not set"}
-                  </p>
-                </div>
+                {m.lessons.length === 0 && (
+                  <div className="text-[10px] text-gray-400">
+                    No lessons yet
+                  </div>
+                )}
               </div>
             </div>
+          );
+        })}
+      </div>
+
+      <button
+        type="button"
+        onClick={() => setCurrentStep(1)}
+        className="mt-4 text-[11px] text-gray-600 hover:text-gray-900"
+      >
+        Basic Information
+      </button>
+    </aside>
+  );
+
+  const CourseMaterialRight = () => (
+    <div className="flex-1">
+      <div className="flex items-start justify-between">
+        <div>
+          <div className="text-[13px] font-semibold text-gray-900">
+            Course Structure
           </div>
-        );
+          <div className="mt-1 text-[11px] text-gray-500">
+            Organise your course into modules and lessons
+          </div>
+        </div>
 
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div className="flex-1 overflow-auto bg-gray-50">
-      {/* Back */}
-      <div className="px-8 py-4">
         <button
-          onClick={() => navigate("/admin/dashboard")}
-          className="text-gray-600 hover:text-gray-800 font-medium flex items-center gap-2 transition-colors text-sm"
+          type="button"
+          onClick={handleAddModule}
+          className="h-8 px-3 rounded-md border border-gray-200 bg-white text-[11px] font-semibold text-gray-700 hover:bg-gray-50 inline-flex items-center gap-2"
         >
-          ← Back
+          <span className="text-[14px] leading-none">+</span> Add Module
         </button>
       </div>
 
-      {/* Centered card like screenshot */}
-      <div className="px-8 pb-10">
-        <div className="max-w-5xl mx-auto bg-white rounded-lg border border-gray-200 shadow-sm">
-          <div className="p-8">
-            <StepHeader />
+      {/* Module */}
+      <div className="mt-6">
+        <div className="text-[12px] font-semibold text-gray-900 mb-2">
+          Module
+        </div>
 
-            {/* (Optional) keep step indicator but subtle; remove if you want exact screenshot */}
-            <div className="mb-6">
-              <div className="flex items-center gap-4">
-                {steps.map((step) => (
-                  <div key={step.number} className="flex items-center gap-4">
-                    <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all text-sm ${
-                        step.number <= currentStep
-                          ? "bg-green-700 text-white"
-                          : "bg-gray-200 text-gray-600"
-                      }`}
-                    >
-                      {step.number}
-                    </div>
-                    {step.number < steps.length && (
-                      <div
-                        className={`h-1 w-20 transition-all ${
-                          step.number < currentStep
-                            ? "bg-green-700"
-                            : "bg-gray-200"
-                        }`}
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
+        <div className="text-[11px] text-gray-700 mb-2">Module Title</div>
+        <input
+          value={selectedModule?.name ?? ""}
+          onChange={(e) => updateModule({ name: e.target.value })}
+          disabled={!selectedModule}
+          className="w-full h-9 px-3 border border-gray-300 rounded-md text-[12px] outline-none disabled:bg-gray-50"
+          placeholder="Module Title"
+        />
+
+        <div className="mt-4 text-[11px] text-gray-700 mb-2">
+          Enter Learning Objective
+        </div>
+        <textarea
+          value={selectedModule?.objective ?? ""}
+          onChange={(e) => updateModule({ objective: e.target.value })}
+          disabled={!selectedModule}
+          rows={4}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-[12px] outline-none resize-none disabled:bg-gray-50"
+        />
+      </div>
+
+      {/* Lessons */}
+      <div className="mt-6">
+        <div className="flex items-center justify-between">
+          <div className="text-[12px] font-semibold text-gray-900">Lessons</div>
+          <button
+            type="button"
+            onClick={handleAddLesson}
+            disabled={!selectedModule}
+            className="text-[11px] font-semibold text-gray-700 hover:text-gray-900 inline-flex items-center gap-2 disabled:opacity-50"
+          >
+            <span className="text-[14px] leading-none">+</span> Add Lesson
+          </button>
+        </div>
+
+        <div className="mt-4 text-[11px] text-gray-700 mb-2">Lesson Title</div>
+        <input
+          value={selectedLesson?.name ?? ""}
+          onChange={(e) =>
+            selectedLesson && updateLesson(selectedLesson.id, { name: e.target.value })
+          }
+          disabled={!selectedLesson}
+          className="w-full h-9 px-3 border border-gray-300 rounded-md text-[12px] outline-none disabled:bg-gray-50"
+          placeholder="Lesson Title"
+        />
+
+        <div className="mt-4 text-[11px] text-gray-700 mb-2">
+          Enter Learning Objective
+        </div>
+        <textarea
+          value={selectedLesson?.objective ?? ""}
+          onChange={(e) =>
+            selectedLesson &&
+            updateLesson(selectedLesson.id, { objective: e.target.value })
+          }
+          disabled={!selectedLesson}
+          rows={4}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-[12px] outline-none resize-none disabled:bg-gray-50"
+        />
+      </div>
+
+      {/* Add Content */}
+      <div className="mt-6">
+        <div className="text-[12px] font-semibold text-gray-900 mb-2">
+          Add Content
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {[
+            "Add Text",
+            "Add embed Code",
+            "Add File",
+            "Add Quiz",
+            "Add Audio",
+          ].map((label, idx) => (
+            <button
+              key={label}
+              type="button"
+              className={`h-7 px-3 rounded-md text-[10px] font-semibold border ${
+                idx === 0
+                  ? "bg-[#0F2F2A] text-white border-[#0F2F2A]"
+                  : "bg-[#d9f99d] text-[#0F2F2A] border-[#c7f36a]"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Editor placeholder */}
+        <div className="mt-3 border border-gray-300 rounded-md bg-white">
+          <div className="h-[260px] w-full" />
+          <div className="border-t border-gray-200 px-3 py-2 text-[10px] text-gray-500">
+            Editor toolbar…
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom buttons */}
+      <div className="mt-8 flex justify-end gap-3">
+        <button
+          type="button"
+          onClick={handleSaveDraft}
+          className="h-8 px-4 rounded-md border border-gray-300 text-[11px] text-gray-700 hover:bg-gray-50"
+        >
+          Save as Draft
+        </button>
+        <button
+          type="button"
+          onClick={handleNext}
+          className="h-8 px-6 rounded-md bg-[#0F2F2A] text-white text-[11px] font-semibold hover:bg-[#0b241f]"
+        >
+          Continue
+        </button>
+      </div>
+    </div>
+  );
+
+  const BasicInfo = () => (
+    <div className="max-w-5xl">
+      <div className="text-[13px] font-semibold text-gray-900 mb-1">
+        Basic Information
+      </div>
+      <div className="text-[11px] text-gray-500 mb-6">
+        Provide the basic course details below
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-5">
+          <div>
+            <label className="block text-[11px] font-semibold text-gray-700 mb-2">
+              <span className="text-red-500">*</span> Course Title
+            </label>
+            <input
+              type="text"
+              className="w-full h-10 px-3 border border-gray-300 rounded-md bg-white text-[12px] outline-none"
+              value={courseData.title}
+              onChange={(e) =>
+                setCourseData({ ...courseData, title: e.target.value })
+              }
+            />
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-semibold text-gray-700 mb-2">
+              <span className="text-red-500">*</span> Course Description
+            </label>
+            <textarea
+              rows={6}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-[12px] outline-none resize-none"
+              value={courseData.description}
+              onChange={(e) =>
+                setCourseData({ ...courseData, description: e.target.value })
+              }
+            />
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-semibold text-gray-700 mb-2">
+              <span className="text-red-500">*</span> Course Category
+            </label>
+            <select
+              className="w-full h-10 px-3 border border-gray-300 rounded-md bg-white text-[12px] outline-none"
+              value={courseData.category}
+              onChange={(e) =>
+                setCourseData({ ...courseData, category: e.target.value })
+              }
+            >
+              <option value=""> </option>
+              <option value="tech">Technology</option>
+              <option value="business">Business</option>
+              <option value="design">Design</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-[11px] font-semibold text-gray-700 mb-2">
+            <span className="text-red-500">*</span> Course Thumbnail
+          </label>
+
+          <div className="border border-green-300 bg-green-100/70 rounded-md p-4">
+            <div className="h-[92px] flex items-center justify-center">
+              {thumbnailPreview ? (
+                <img
+                  src={thumbnailPreview}
+                  alt="Preview"
+                  className="w-full h-[92px] object-cover rounded"
+                />
+              ) : (
+                <div className="text-center">
+                  <p className="text-[10px] text-gray-600 mb-2">
+                    Upload Image .jpeg, .png
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-8 h-9 rounded-full bg-[#0F2F2A] text-white text-[12px] font-semibold hover:bg-[#0b241f]"
+                  >
+                    Upload
+                  </button>
+                </div>
+              )}
             </div>
 
-            {/* Content */}
-            <div className="pb-10">{renderStepContent()}</div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="hidden"
+              accept="image/*"
+              onChange={handleThumbnailChange}
+            />
+          </div>
+        </div>
+      </div>
 
-            {/* Bottom actions */}
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={handleSaveDraft}
-                className="h-9 px-4 border border-gray-300 rounded-md text-gray-700 text-sm hover:bg-gray-50 transition-colors"
-              >
-                Save as Draft
-              </button>
-              <button
-                onClick={handleNext}
-                className="h-9 px-6 rounded-md bg-[#0F2F2A] text-white text-sm font-medium hover:bg-[#0b241f] transition-colors"
-              >
-                {currentStep === 3 ? "Publish" : "Continue"}
-              </button>
+      <div className="mt-8 flex justify-end gap-3">
+        <button
+          type="button"
+          onClick={handleSaveDraft}
+          className="h-8 px-4 rounded-md border border-gray-300 text-[11px] text-gray-700 hover:bg-gray-50"
+        >
+          Save as Draft
+        </button>
+        <button
+          type="button"
+          onClick={() => setCurrentStep(2)}
+          className="h-8 px-6 rounded-md bg-[#0F2F2A] text-white text-[11px] font-semibold hover:bg-[#0b241f]"
+        >
+          Continue
+        </button>
+      </div>
+    </div>
+  );
+
+  const Review = () => (
+    <div className="max-w-5xl">
+      <div className="text-[13px] font-semibold text-gray-900 mb-1">
+        Review & Publish
+      </div>
+      <div className="text-[11px] text-gray-500 mb-6">
+        Review your course before publishing
+      </div>
+
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 space-y-4">
+        <div>
+          <div className="text-[11px] text-gray-500">Course Title</div>
+          <div className="text-[13px] font-semibold text-gray-900">
+            {courseData.title || "Not set"}
+          </div>
+        </div>
+        <div>
+          <div className="text-[11px] text-gray-500">Description</div>
+          <div className="text-[12px] text-gray-800">
+            {courseData.description || "Not set"}
+          </div>
+        </div>
+        <div>
+          <div className="text-[11px] text-gray-500">Category</div>
+          <div className="text-[12px] text-gray-800">
+            {courseData.category || "Not set"}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-8 flex justify-end gap-3">
+        <button
+          type="button"
+          onClick={handleBackStep}
+          className="h-8 px-4 rounded-md border border-gray-300 text-[11px] text-gray-700 hover:bg-gray-50"
+        >
+          Previous
+        </button>
+        <button
+          type="button"
+          onClick={handlePublish}
+          className="h-8 px-6 rounded-md bg-[#0F2F2A] text-white text-[11px] font-semibold hover:bg-[#0b241f]"
+        >
+          Publish
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex-1 overflow-auto bg-gray-50 min-h-screen">
+      {/* Top back */}
+      <div className="px-8 pt-6">
+        <button
+          onClick={() => navigate("/admin/dashboard")}
+          className="text-[12px] text-gray-600 hover:text-gray-900 inline-flex items-center gap-2"
+        >
+          <span className="text-base leading-none">‹</span>
+          Back
+        </button>
+      </div>
+
+      {/* Centered page */}
+      <div className="px-8 pb-10 pt-4">
+        <div className="max-w-6xl mx-auto bg-white border border-gray-200 rounded-md">
+          <div className="px-10 pt-8 pb-8">
+            <div className="text-[15px] font-semibold text-gray-900">
+              {steps[currentStep - 1]?.name ?? "Create Course"}
             </div>
 
-            {/* Back step (if needed for steps 2/3) */}
-            {currentStep > 1 && (
-              <div className="mt-4">
-                <button
-                  type="button"
-                  onClick={handleBack}
-                  className="text-sm text-gray-600 hover:text-gray-800"
-                >
-                  ← Previous
-                </button>
+            <div className="mt-4">
+              <StepTabs />
+            </div>
+
+            {/* Layout like screenshots: sidebar + main */}
+            <div className="mt-2 flex flex-col lg:flex-row gap-8">
+              <Sidebar />
+
+              <div className="flex-1">
+                {currentStep === 1 && <BasicInfo />}
+                {currentStep === 2 && <CourseMaterialRight />}
+                {currentStep === 3 && <Review />}
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>

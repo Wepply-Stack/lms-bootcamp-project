@@ -13,6 +13,8 @@ function App() {
     createRoutesFromElements(
       <>
         <Route path="/" element={<Login />} errorElement={<ErrorBoundary />} />
+
+        
         
         {/* Admin Routes with Layout */}
         <Route 
@@ -36,6 +38,8 @@ function App() {
   );
   
   return <RouterProvider router={router} />
+  
 }
 
 export default App
+

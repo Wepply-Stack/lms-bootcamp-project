@@ -58,11 +58,12 @@ export default function Dashboard() {
   );
 
   const handleStartCreating = () => navigate("/admin/create-course");
-  const handleEditCourse = (courseId) => navigate(`/admin/create-course?edit=${courseId}`);
+  const handleEditCourse = (courseId) =>
+    navigate(`/admin/create-course?edit=${courseId}`);
   const handleViewCourse = (courseId) => console.log("Viewing course:", courseId);
 
   return (
-    <div className="flex-1 overflow-auto bg-[#f6f7f7]">
+    <div className="flex-1 overflow-auto bg-[#f6f7f7] min-h-screen w-full">
       {/* Main */}
       <div className="px-6 pb-10 pt-6">
         {/* Top content: left welcome + create card, right progress */}
@@ -79,7 +80,9 @@ export default function Dashboard() {
                 <span className="text-xl font-bold text-[#1f4d45]">+</span>
               </div>
 
-              <h3 className="text-center text-sm font-semibold text-gray-900">Create a Course</h3>
+              <h3 className="text-center text-sm font-semibold text-gray-900">
+                Create a Course
+              </h3>
               <p className="mx-auto mt-2 max-w-[18rem] text-center text-xs text-gray-600">
                 Use this to create <br />
                 Modules and Lessons
@@ -98,8 +101,12 @@ export default function Dashboard() {
           <div className="lg:col-span-8">
             <div className="mb-4 flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-sm font-semibold text-gray-900">Employee Progress</h2>
-                <p className="text-xs text-gray-600">Select the course to view progress</p>
+                <h2 className="text-sm font-semibold text-gray-900">
+                  Employee Progress
+                </h2>
+                <p className="text-xs text-gray-600">
+                  Select the course to view progress
+                </p>
               </div>
 
               <div className="w-full max-w-[260px]">
@@ -127,7 +134,9 @@ export default function Dashboard() {
                   className="rounded-xl bg-[#d9f99d] p-5 shadow-sm ring-1 ring-black/5"
                 >
                   <p className="text-xs font-medium text-gray-800">{stat.label}</p>
-                  <p className="mt-2 text-3xl font-semibold text-gray-900">{stat.value}</p>
+                  <p className="mt-2 text-3xl font-semibold text-gray-900">
+                    {stat.value}
+                  </p>
                 </div>
               ))}
             </div>
@@ -137,7 +146,9 @@ export default function Dashboard() {
         {/* Continue to Create Course */}
         <div className="mt-8">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-gray-900">Continue to Create Course</h2>
+            <h2 className="text-sm font-semibold text-gray-900">
+              Continue to Create Course
+            </h2>
             <a href="#" className="text-xs font-semibold text-gray-700 hover:text-gray-900">
               View All
             </a>
@@ -150,7 +161,11 @@ export default function Dashboard() {
                 className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5"
               >
                 <div className="h-28 w-full overflow-hidden">
-                  <img src={course.image} alt={course.name} className="h-full w-full object-cover" />
+                  <img
+                    src={course.image}
+                    alt={course.name}
+                    className="h-full w-full object-cover"
+                  />
                 </div>
 
                 <div className="p-4">
@@ -159,7 +174,9 @@ export default function Dashboard() {
                     <p className="text-[10px] text-gray-500">{course.lessons}</p>
                   </div>
 
-                  <h3 className="mt-1 text-xs font-semibold text-gray-900">{course.name}</h3>
+                  <h3 className="mt-1 text-xs font-semibold text-gray-900">
+                    {course.name}
+                  </h3>
                   <p className="mt-1 line-clamp-2 text-[10px] leading-4 text-gray-500">
                     {course.desc}
                   </p>
@@ -196,9 +213,11 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Recently Assigned Courses (header only, as visible in screenshot bottom) */}
+        {/* Recently Assigned Courses */}
         <div className="mt-8">
-          <h2 className="text-sm font-semibold text-gray-900">Recently Assigned Courses</h2>
+          <h2 className="text-sm font-semibold text-gray-900">
+            Recently Assigned Courses
+          </h2>
         </div>
       </div>
     </div>
