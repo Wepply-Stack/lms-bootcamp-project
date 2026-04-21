@@ -1,4 +1,3 @@
-# render.yaml (place in project root)
 services:
   - type: web
     name: lms-wfpq
