@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'core',
     'apps.auth_app.apps.AuthAppConfig',
     'apps.admin_app',
+    'apps.courses_app.apps.CoursesAppConfig'
 ]
 
 MIDDLEWARE = [
