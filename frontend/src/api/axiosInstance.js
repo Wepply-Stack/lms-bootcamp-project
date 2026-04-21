@@ -1,6 +1,7 @@
 import axios from "axios";
+import env from "../config/env";
 
-const API_URL = "http://127.0.0.1:8000/api/auth/"; // To be set
+const API_URL = env.API_URL;
 
 // Create instance
 const axiosInstance = axios.create({
