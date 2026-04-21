@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: lms-wfpq
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: "pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput"
+    startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT"
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        value: "django-insecure-am#$_i&c*+ga4jo)aiiw3z+kq4t5@r1kp*2pr@1ku=ar^s$4pr"
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: "lms-wfpq.onrender.com,localhost,127.0.0.1"
+      - key: DJANGO_TIME_ZONE
+        value: "UTC"
+      - key: DATABASE_URL
+        value: "postgresql://lms_db_2tds_user:nFiE7T7zN6XSuopIwb5bCdvrCLDPS0qn@dpg-d7j2ep67r5hc73b8sufg-a.oregon-postgres.render.com/lms_db_2tds"
+      - key: JWT_ACCESS_TOKEN_LIFETIME
+        value: "24"
+      - key: JWT_REFRESH_TOKEN_LIFETIME
+        value: "168"
