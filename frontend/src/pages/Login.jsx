@@ -1,54 +1,48 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuth from "@/auth/useAuth";
-
-
 
 export default function Login() {
-  const [formdata, setFormData] = useState({ email: "", password: "" });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
-  const { login, user, isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState(null);
+  const navigate = useNavigate();
 
-  function handleChange(e) {
-  setFormData({ ...formdata, [e.target.name]: e.target.value });
-  }
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    const data = await login(formdata);
-    const role = data?.user?.role;
-    if (role === "admin") {
-      navigate("/admin");
-    } else if (role === "employee") {
-      navigate("/employee");
-    }
+    
+    // Simulate API call
+    setTimeout(() => {
+      setLoading(false);
+      // Redirect to dashboard after successful login
+      navigate("/admin/dashboard");
+    }, 2000);
   };
 
   return (
     // main container div
-    <div className="flex min-h-screen">
+    <div className="flex h-screen w-screen overflow-hidden">
       {/* Left side Info section */}
-      <div className=" bg-green-950 flex flex-1 items-center justify-center flex-col">
-        <div className="flex flex-col items-start p-48">
-            <h1 className="text-green-100 text-5xl pb-4">Logo</h1>
-            <h2 className="text-green-100 text-3xl pb-4">Unlock your Learning Potential</h2>
-            <p className="text-green-100 text-xl m-0 p-0 text-left" >Sign in to continue your journey of growth and kowledge.
+      <div className="hidden lg:flex lg:flex-1 bg-green-950 items-center justify-center flex-col">
+        <div className="flex flex-col items-start px-8 lg:px-12">
+            <h1 className="text-green-100 text-4xl lg:text-5xl pb-4">Logo</h1>
+            <h2 className="text-green-100 text-2xl lg:text-3xl pb-4">Unlock your Learning Potential</h2>
+            <p className="text-green-100 text-lg lg:text-xl m-0 p-0 text-left" >Sign in to continue your journey of growth and kowledge.
               Explore courses, track progress and achieve your goals
             </p>
         </div>    
       </div>
       {/* Right Side Login section */}
-      <div className="flex flex-1 items-center justify-center">
+      <div className="flex w-full lg:flex-1 items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
          
 
             {/* Card */}
-            <div className="relative w-full max-w-2xl">
+            <div className="relative w-full max-w-md">
 
-              <div className="bg-white   rounded-2xl p-10 shadow-2xl shadow-black/60">
+              <div className="bg-white rounded-2xl p-6 sm:p-8 lg:p-10 shadow-2xl shadow-black/60">
 
                 {/* Logo / brand mark */}
                 
@@ -65,9 +59,8 @@ export default function Login() {
                     <input
                       type="email"
                       required
-                      name="email"
-                      value={formdata.email}
-                      onChange={handleChange}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       onFocus={() => setFocused("email")}
                       onBlur={() => setFocused(null)}
                       placeholder="ENTER EMAIL"
@@ -84,9 +77,8 @@ export default function Login() {
                       <input
                         type={showPassword ? "text" : "password"}
                         required
-                        name="password"
-                        value={formdata.password}
-                        onChange={handleChange}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         onFocus={() => setFocused("password")}
                         onBlur={() => setFocused(null)}
                         placeholder="••••••••"
