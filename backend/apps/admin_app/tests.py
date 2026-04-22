@@ -4,10 +4,15 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from apps.auth_app.models import User
+from apps.admin_app import views
 
 class AdminAccessTests(TestCase):
     
     def setUp(self):
+        # Resets DB and 
+        views.courses_db.clear()
+        views.course_id_counter = 1
+
         self.client = APIClient()
         
         # Create admin user
