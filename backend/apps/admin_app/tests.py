@@ -9,10 +9,9 @@ from apps.admin_app import views
 class AdminAccessTests(TestCase):
     
     def setUp(self):
-        # Resets DB and 
+        # Resets DB and counter value to 1
         views.courses_db.clear()
         views.course_id_counter = 1
-
         self.client = APIClient()
         
         # Create admin user
