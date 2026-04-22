@@ -270,11 +270,56 @@ git push origin your-branch-name
 }
 ```
 
+### 2. Forgot Password (Request Reset Link)
+**Endpoint:** `POST /api/auth/forgot-password`
+
+**Request:**
+```json
+{
+    "email": "john@example.com"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+    "message": "Password reset link generated",
+    "reset_link": "http://localhost:5173/reset-password?token=abc123xyz",
+    "token": "abc123xyz"
+}
+```
+
+### 3. Reset Password (With Token)
+**Endpoint:** `POST /api/auth/reset-password`
+
+**Request:**
+```json
+{
+    "token": "abc123xyz",
+    "new_password": "NewStrong@123",
+    "confirm_password": "NewStrong@123"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+    "message": "Password reset successfully"
+}
+```
+
+**Error Response (400 Bad Request):**
+```json
+{
+    "confirm_password": ["Passwords do not match"]
+}
+```
+
 ---
 
 ## ADMIN ENDPOINTS (Requires role=admin)
 
-### 2. Admin Dashboard
+### 4. Admin Dashboard
 **Endpoint:** `GET /api/admin/dashboard`
 
 **Headers:**
@@ -291,7 +336,7 @@ Authorization: Bearer <access_token>
 }
 ```
 
-### 3. List All Employees
+### 5. List All Employees
 **Endpoint:** `GET /api/users`
 
 **Headers:**
@@ -325,7 +370,7 @@ Authorization: Bearer <access_token>
 ]
 ```
 
-### 4. Create Employee
+### 6. Create Employee
 **Endpoint:** `POST /api/admin/employees`
 
 **Headers:**
@@ -373,7 +418,7 @@ Content-Type: application/json
 }
 ```
 
-### 5. List All Courses
+### 7. List All Courses
 **Endpoint:** `GET /api/courses/`
 
 **Headers:**
@@ -403,7 +448,7 @@ Authorization: Bearer <access_token>
 ]
 ```
 
-### 6. Create Course
+### 8. Create Course
 **Endpoint:** `POST /api/courses/`
 
 **Headers:**
@@ -443,7 +488,7 @@ Content-Type: application/json
 
 ## EMPLOYEE ENDPOINTS (Requires role=employee)
 
-### 7. Get Employee Profile
+### 9. Get Employee Profile
 **Endpoint:** `GET /api/employee/profile`
 
 **Headers:**
@@ -465,7 +510,7 @@ Authorization: Bearer <access_token>
 }
 ```
 
-### 8. Update Employee Profile
+### 10. Update Employee Profile
 **Endpoint:** `PUT /api/employee/profile`
 
 **Headers:**
@@ -500,7 +545,7 @@ Content-Type: application/json
 }
 ```
 
-### 9. Change Employee Password
+### 11. Change Employee Password
 **Endpoint:** `POST /api/employee/change-password`
 
 **Headers:**
