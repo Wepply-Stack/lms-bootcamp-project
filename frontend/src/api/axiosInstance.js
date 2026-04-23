@@ -38,7 +38,7 @@ axiosInstance.interceptors.response.use(
       error.response?.status === 401 &&
       !originalRequest._retry &&
       !originalRequest.url.includes("api/auth/login/") &&
-      !originalRequest.includes("api/auth/token/refresh/")
+      !originalRequest.url.includes("api/auth/token/refresh/")
     ) {
       try {
         const res = await axiosInstance.post(
