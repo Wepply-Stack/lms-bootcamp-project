@@ -8,6 +8,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 from .serializers import LoginSerializer, UserSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework.permissions import IsAuthenticated
 from .models import User, PasswordResetToken
 
 class LoginView(APIView):
@@ -39,6 +42,10 @@ class LoginView(APIView):
                 status=status.HTTP_401_UNAUTHORIZED
             )
         
+        # Updates last_login timestamp in Database
+        user.last_login = timezone.now()
+        user.save(update_fields=["last_login"])
+
         refresh = RefreshToken.for_user(user)
         refresh['user_id'] = user.id
         refresh['role'] = user.role
@@ -137,3 +144,22 @@ class ResetPasswordView(APIView):
         PasswordResetToken.objects.filter(user=user, is_used=False).delete()
         
         return Response({'message': 'Password reset successfully'}, status=status.HTTP_200_OK)
+    
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            refresh_token = request.data.get("refresh")
+            if not refresh_token:
+                return Response({"error": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Refreshes the refresh token and adds it to the blacklist immediately 
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            return Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)
+        
+        except TokenError:
+            return Response({"error": "Invalid or expired refreh token"}, status=status.HTTP_400_BAD_REQUEST)
