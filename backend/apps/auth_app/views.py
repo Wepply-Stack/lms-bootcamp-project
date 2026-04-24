@@ -42,6 +42,10 @@ class LoginView(APIView):
                 status=status.HTTP_401_UNAUTHORIZED
             )
         
+        # Updates last_login timestamp in Database
+        user.last_login = timezone.now()
+        user.save(update_fields=["last_login"])
+
         refresh = RefreshToken.for_user(user)
         refresh['user_id'] = user.id
         refresh['role'] = user.role
