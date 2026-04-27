@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-dev-key")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["lms-wfpq.onrender.com"]
+ALLOWED_HOSTS = ["lms-wfpq.onrender.com", "lms-bootcamp-project.vercel.app"]
 
 
 # Application definition
@@ -177,13 +177,13 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
+    'https://lms-bootcamp-project.vercel.app',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5173',
+    'https://lms-bootcamp-project.vercel.app',
 ]
 
 # Custom user model
