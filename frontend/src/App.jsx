@@ -7,7 +7,6 @@ import {
 } from "react-router-dom";
 
 import Login from "./pages/Login";
-import MainLayout from "./layout/MainLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 // Admin
