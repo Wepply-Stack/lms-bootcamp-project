@@ -45,7 +45,7 @@
         setOpen(false);
         // If you have auth context/localStorage token, clear it here.
         // localStorage.removeItem("token");
-        navigate("/");
+        navigate(".");
       };
 
       return (
