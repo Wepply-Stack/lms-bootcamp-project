@@ -3,8 +3,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .serializers import LoginSerializer, UserSerializer
-from .models import User
+from django.utils import timezone
+from django.core.mail import send_mail
+from django.conf import settings
+from .serializers import LoginSerializer, UserSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from .models import User, PasswordResetToken
 
 class LoginView(APIView):
     permission_classes = []
@@ -39,8 +43,97 @@ class LoginView(APIView):
         refresh['user_id'] = user.id
         refresh['role'] = user.role
         
-        return Response({
+        response = Response({
             'access': str(refresh.access_token),
             'refresh': str(refresh),
             'user': UserSerializer(user).data
         })
+
+        response.set_cookie(
+            key='refresh_token',
+            value=str(refresh),
+            httponly=True,
+            secure=False,
+            samesite='Lax',
+            path='/api/auth/token/refresh/'
+        )
+        return response
+    
+class CookieTokenRefreshView(APIView):
+    permission_classes = []
+
+    def post(self, request):
+        refresh_token = request.COOKIES.get("refresh_token")
+
+        if not refresh_token:
+            return Response({"error": "No refresh token"}, status=401)
+
+        serializer = TokenRefreshSerializer(data={"refresh": refresh_token})
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except Exception:
+            return Response({"error": "Invalid refresh"}, status=401)
+
+        return Response(serializer.validated_data)
+
+class ForgotPasswordView(APIView):
+    permission_classes = []
+    authentication_classes = []
+    
+    def post(self, request):
+        serializer = ForgotPasswordSerializer(data=request.data)
+        
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        email = serializer.validated_data['email']
+        user = User.objects.get(email=email)
+        
+        # Delete old unused tokens
+        PasswordResetToken.objects.filter(user=user, is_used=False).delete()
+        
+        reset_token = PasswordResetToken.objects.create(user=user)
+        
+        reset_link = f"http://localhost:5173/reset-password?token={reset_token.token}"
+        
+        return Response({
+            'message': 'Password reset link generated',
+            'reset_link': reset_link,
+            'token': reset_token.token
+        }, status=status.HTTP_200_OK)
+
+class ResetPasswordView(APIView):
+    permission_classes = []
+    authentication_classes = []
+    
+    def post(self, request):
+        serializer = ResetPasswordSerializer(data=request.data)
+        
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        token = serializer.validated_data['token']
+        new_password = serializer.validated_data['new_password']
+        
+        try:
+            reset_token = PasswordResetToken.objects.get(token=token)
+        except PasswordResetToken.DoesNotExist:
+            return Response({'error': 'Invalid or expired token'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not reset_token.is_valid():
+            return Response({'error': 'Token has expired or already used'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Reset password
+        user = reset_token.user
+        user.set_password(new_password)
+        user.save()
+        
+        # Mark token as used
+        reset_token.is_used = True
+        reset_token.save()
+        
+        # Delete all other unused tokens for this employee
+        PasswordResetToken.objects.filter(user=user, is_used=False).delete()
+        
+        return Response({'message': 'Password reset successfully'}, status=status.HTTP_200_OK)
