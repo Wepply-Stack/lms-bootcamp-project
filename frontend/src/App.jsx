@@ -4,6 +4,7 @@ import {
   Route,
   RouterProvider,
   Outlet,
+  Navigate,
 } from "react-router-dom";
 
 import Login from "./pages/Login";
@@ -42,7 +43,8 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<AdminDashboard />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="create-course" element={<CreateCourse />} />
           <Route path="manage-employees" element={<ManageEmployees />} />
           <Route path="track-progress" element={<TrackProgress />} />

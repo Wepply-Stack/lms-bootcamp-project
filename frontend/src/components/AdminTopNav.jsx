@@ -9,7 +9,7 @@
       const menuRef = useRef(null);
 
       const menuItems = [
-        { name: "Dashboard", path: "." },
+        { name: "Dashboard", path: "./dashboard" },
         { name: "Create Course", path: "./create-course" },
         { name: "Manage Employees", path: "./manage-employees" },
         { name: "Track Progress", path: "./track-progress" },
