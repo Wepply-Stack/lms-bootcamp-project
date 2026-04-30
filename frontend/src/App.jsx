@@ -28,7 +28,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<MainLayout />} errorElement={<ErrorBoundary />}>
+      <Route path="/" element={<><Outlet /></>} errorElement={<ErrorBoundary />}>
         
         {/* Public Route */}
         <Route index element={<Login />} />
@@ -38,9 +38,7 @@ function App() {
           path="admin"
           element={
             <ProtectedRoute allowRoles={["admin"]}>
-              <AdminLayout>
-                <AdminDashboard />
-              </AdminLayout>
+              <AdminLayout/>
             </ProtectedRoute>
           }
         >
