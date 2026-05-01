@@ -1,12 +1,16 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
-    AdminDashboardView, CourseViewSet, UsersView, CreateEmployeeView,
+    AdminDashboardView, UsersView, CreateEmployeeView,
     EmployeeProfileView, EmployeeChangePasswordView
 )
 
+<<<<<<< HEAD
 # router = DefaultRouter()
 # router.register(r'courses', CourseViewSet, basename='course')
+=======
+router = DefaultRouter()
+>>>>>>> e3ac74fa2b478e367b8ac2957ad73e544d68ca7a
 
 urlpatterns = [
     path('admin/dashboard/', AdminDashboardView.as_view(), name='admin-dashboard'),

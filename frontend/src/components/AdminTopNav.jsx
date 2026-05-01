@@ -1,4 +1,4 @@
-    import { Link, useLocation, useNavigate } from "react-router-dom";
+    import { NavLink, useLocation, useNavigate } from "react-router-dom";
     import { useEffect, useRef, useState } from "react";
 
     export default function AdminTopNav() {
@@ -9,10 +9,10 @@
       const menuRef = useRef(null);
 
       const menuItems = [
-        { name: "Dashboard", path: "/admin/dashboard" },
-        { name: "Create Course", path: "/admin/create-course" },
-        { name: "Manage Employees", path: "/admin/manage-employees" },
-        { name: "Track Progress", path: "/admin/track-progress" },
+        { name: "Dashboard", path: "./dashboard" },
+        { name: "Create Course", path: "./create-course" },
+        { name: "Manage Employees", path: "./manage-employees" },
+        { name: "Track Progress", path: "./track-progress" },
       ];
 
       const isActive = (path) => location.pathname === path;
@@ -45,7 +45,7 @@
         setOpen(false);
         // If you have auth context/localStorage token, clear it here.
         // localStorage.removeItem("token");
-        navigate("/");
+        navigate(".");
       };
 
       return (
@@ -61,13 +61,13 @@
             {/* Middle: centered pills */}
             <nav className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
               {menuItems.map((item) => (
-                <Link
+                <NavLink
                   key={item.path}
                   to={item.path}
                   className={`${basePill} ${isActive(item.path) ? activePill : inactivePill}`}
                 >
                   {item.name}
-                </Link>
+                </NavLink>
               ))}
             </nav>
 
