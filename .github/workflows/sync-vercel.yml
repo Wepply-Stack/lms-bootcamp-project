@@ -1,0 +1,16 @@
+name: Sync to Vercel Repo
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Push to Vercel Repo
+        run: |
+          git remote add vercel https://github.com/its-jedu/lms-bootcamp-project.git
+          git push vercel main --force
