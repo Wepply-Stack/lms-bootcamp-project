@@ -53,7 +53,7 @@ function App() {
 
         {/* Employee Routes */}
         <Route
-          path="employee/:id"
+          path="employee"
           element={
             <ProtectedRoute allowRoles={["employee"]}>
               <EmployeeDashboard />
