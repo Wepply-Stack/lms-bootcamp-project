@@ -53,14 +53,15 @@ function App() {
 
         {/* Employee Routes */}
         <Route
-          path="employee"
+          path="employee/:id"
           element={
             <ProtectedRoute allowRoles={["employee"]}>
               <EmployeeDashboard />
             </ProtectedRoute>
           }
         >
-          <Route index element={<EmployeeOverview />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<EmployeeOverview />} />
         </Route>
 
       </Route>
