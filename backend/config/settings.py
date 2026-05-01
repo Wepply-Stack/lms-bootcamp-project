@@ -32,6 +32,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-dev-key")
 DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = ["lms-wfpq.onrender.com", "lms-bootcamp-project.vercel.app"]
+# ALLOWED_HOSTS = ["localhost"]
 
 
 # Application definition
@@ -117,7 +118,7 @@ DATABASES = {
     )
 }
 
-# # PostgreSQL  
+# PostgreSQL  
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
