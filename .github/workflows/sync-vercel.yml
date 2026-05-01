@@ -1,4 +1,4 @@
-name: Push to Vercel Repo
+name: Sync to Vercel Repo
 
 on:
   push:
@@ -12,5 +12,5 @@ jobs:
 
       - name: Push to Vercel Repo
         run: |
-          git remote add vercel https://github.com/its-jedu/lms-bootcamp-project.git
+          git remote add vercel https://x-access-token:${{ secrets.VERCEL_TOKEN }}@github.com/its-jedu/lms-bootcamp-project.git
           git push vercel main --force
