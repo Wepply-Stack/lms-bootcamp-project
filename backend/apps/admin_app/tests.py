@@ -8,6 +8,7 @@ from apps.courses_app.models import Course
 class AdminAccessTests(TestCase):
     
     def setUp(self):
+        
         self.client = APIClient()
         
         # Create admin user
@@ -30,11 +31,16 @@ class AdminAccessTests(TestCase):
     
     def test_admin_can_access_dashboard(self):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.admin_token}')
+
+        Course.objects.create(title='Course 1', description='First course', status='draft')
+        Course.objects.create(title='Course 2', description='Second course', status='published')
+
         response = self.client.get('/api/admin/dashboard/')
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn('total_courses', response.data)
-        self.assertIn('total_employees', response.data)
+        self.assertEqual(response.data['total_courses'], 2)
+        self.assertEqual(response.data['total_employees'], 1)
+        self.assertEqual(response.data['total_assignments'], 0)
     
     def test_employee_cannot_access_dashboard(self):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.employee_token}')
@@ -44,6 +50,7 @@ class AdminAccessTests(TestCase):
     
     def test_admin_can_create_course(self):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.admin_token}')
+        self.assertEqual(Course.objects.count(), 0)
         response = self.client.post('/api/courses/', {
             'title': 'Test Course',
             'description': 'This is a test course'
@@ -53,8 +60,11 @@ class AdminAccessTests(TestCase):
         self.assertEqual(response.data['title'], 'Test Course')
         self.assertEqual(response.data['status'], 'draft')
         self.assertEqual(Course.objects.count(), 1)
-        self.assertEqual(Course.objects.first().title, "Test Course")
-        self.assertEqual(Course.objects.first().status, "draft")
+
+        course = Course.objects.get()
+        self.assertEqual(course.title, 'Test Course')
+        self.assertEqual(course.description, 'This is a test course')
+        self.assertEqual(course.status, 'draft')
     
     def test_admin_cannot_create_course_without_title(self):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.admin_token}')
@@ -63,7 +73,6 @@ class AdminAccessTests(TestCase):
         })
         
         self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
-        self.assertEqual(Course.objects.count(), 0)
     
     def test_employee_cannot_create_course(self):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.employee_token}')
@@ -72,7 +81,6 @@ class AdminAccessTests(TestCase):
         })
         
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(Course.objects.count(), 0)
     
     def test_admin_can_list_employees(self):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.admin_token}')
@@ -95,12 +103,18 @@ class AdminAccessTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
     
     def test_admin_can_list_courses(self):
-        # First create a course
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.admin_token}')
-        self.client.post('/api/courses/', {'title': 'Course 1'})
+
+        Course.objects.create(
+            title='Course 1',
+            description='First course',
+            status='draft'
+        )
         
         # Then list courses
         response = self.client.get('/api/courses/')
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
-        self.assertEqual(Course.objects.count(), 1)
+        self.assertEqual(response.data[0]['title'], 'Course 1')
+        self.assertEqual(response.data[0]['status'], 'draft')

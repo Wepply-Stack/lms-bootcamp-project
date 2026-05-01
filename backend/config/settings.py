@@ -25,14 +25,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# SECURITY WARNING: keep the secret key used in production secret!n
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-dev-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["lms-wfpq.onrender.com"]
-
+ALLOWED_HOSTS = ["lms-wfpq.onrender.com", "lms-bootcamp-project.vercel.app", "127.0.0.1", "localhost"]
 
 # Application definition
 
@@ -177,12 +176,14 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOWED_ORIGINS = [
+    'https://lms-bootcamp-project.vercel.app',
     'http://localhost:5173',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
+    'https://lms-bootcamp-project.vercel.app',
     'http://localhost:5173',
 ]
 
