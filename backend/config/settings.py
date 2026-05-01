@@ -31,8 +31,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-dev-key")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["lms-wfpq.onrender.com", "lms-bootcamp-project.vercel.app", "127.0.0.1", "localhost"]
-
+ALLOWED_HOSTS = ["lms-wfpq.onrender.com", "lms-bootcamp-project.vercel.app", "127.0.0.1", "localhost"]
 
 # Application definition
 
