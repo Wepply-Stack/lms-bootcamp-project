@@ -23,8 +23,7 @@ export default function AdminDashboard() {
         status: "Draft",
         lessons: "8 Lessons",
         desc: "A project management course equips professionals with essential skills to plan,",
-        image:
-          "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=60",
+      
       },
       {
         id: 2,
@@ -32,8 +31,6 @@ export default function AdminDashboard() {
         status: "Published",
         lessons: "8 Lessons",
         desc: "A project management course equips professionals with essential skills to plan,",
-        image:
-          "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=60",
       },
       {
         id: 3,
@@ -41,8 +38,6 @@ export default function AdminDashboard() {
         status: "Draft",
         lessons: "8 Lessons",
         desc: "A project management course equips professionals with essential skills to plan,",
-        image:
-          "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=60",
       },
       {
         id: 4,
@@ -50,8 +45,6 @@ export default function AdminDashboard() {
         status: "Draft",
         lessons: "8 Lessons",
         desc: "A project management course equips professionals with essential skills to plan,",
-        image:
-          "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=60",
       },
     ],
     []
@@ -149,10 +142,6 @@ export default function AdminDashboard() {
                 key={course.id}
                 className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5"
               >
-                <div className="h-28 w-full overflow-hidden">
-                  <img src={course.image} alt={course.name} className="h-full w-full object-cover" />
-                </div>
-
                 <div className="p-4">
                   <div className="flex items-center justify-between">
                     <p className="text-[10px] text-gray-500">Course</p>
