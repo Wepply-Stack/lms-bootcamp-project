@@ -1,9 +1,11 @@
-    import { NavLink, useLocation, useNavigate } from "react-router-dom";
+    import { NavLink, replace, useLocation, useNavigate } from "react-router-dom";
     import { useEffect, useRef, useState } from "react";
+    import useAuth from "@/auth/useAuth";
 
     export default function AdminTopNav() {
       const location = useLocation();
       const navigate = useNavigate();
+      const { logout } = useAuth();
 
       const [open, setOpen] = useState(false);
       const menuRef = useRef(null);
@@ -43,9 +45,8 @@
 
       const handleLogout = () => {
         setOpen(false);
-        // If you have auth context/localStorage token, clear it here.
-        // localStorage.removeItem("token");
-        navigate(".");
+        logout();
+        navigate("/", { replace: true });
       };
 
       return (
