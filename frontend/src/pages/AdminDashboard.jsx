@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/auth/useAuth";
 
@@ -6,7 +6,7 @@ export default function AdminDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [selectedCourse, setSelectedCourse] = useState("all");
-  console.log("AdminDashboard user:", user);
+  
   const statsData = useMemo(
     () => [
       { label: "Number of Employees Enrolled", value: "3" },
@@ -185,11 +185,6 @@ export default function AdminDashboard() {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Recently Assigned Courses (header only, as visible in screenshot bottom) */}
-        <div className="mt-8">
-          <h2 className="text-sm font-semibold text-gray-900">Recently Assigned Courses</h2>
         </div>
       </div>
     </div>
