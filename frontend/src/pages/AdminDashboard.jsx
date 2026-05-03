@@ -7,18 +7,17 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const [selectedCourse, setSelectedCourse] = useState("all");
   
-  const statsData = useMemo(
-    () => [
+  const statsData = 
+    [
       { label: "Number of Employees Enrolled", value: "3" },
       { label: "Number of Employees Completed", value: "4" },
       { label: "Number of Employees Inprogress", value: "4" },
       { label: "Number of Employees Not Started", value: "1" },
-    ],
-    []
-  );
+    ]
+  ;
 
-  const courses = useMemo(
-    () => [
+  const courses = 
+    [
       {
         id: 1,
         name: "Project Management",
@@ -48,9 +47,7 @@ export default function AdminDashboard() {
         lessons: "8 Lessons",
         desc: "A project management course equips professionals with essential skills to plan,",
       },
-    ],
-    []
-  );
+    ];
 
   const handleStartCreating = () => navigate("/admin/create-course");
   const handleEditCourse = (courseId) => navigate(`/admin/create-course?edit=${courseId}`);
