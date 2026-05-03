@@ -5,7 +5,7 @@
     export default function AdminTopNav() {
       const location = useLocation();
       const navigate = useNavigate();
-      const { logout } = useAuth();
+      const { logout, isAuthenticated, user, accessToken } = useAuth();
 
       const [open, setOpen] = useState(false);
       const menuRef = useRef(null);

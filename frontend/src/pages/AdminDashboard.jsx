@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useAuth from "@/auth/useAuth";
 
 export default function AdminDashboard() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [selectedCourse, setSelectedCourse] = useState("all");
-
+  console.log("AdminDashboard user:", user);
   const statsData = useMemo(
     () => [
       { label: "Number of Employees Enrolled", value: "3" },
@@ -63,7 +65,7 @@ export default function AdminDashboard() {
           {/* Left column */}
           <div className="lg:col-span-4">
             <div className="mb-6">
-              <h1 className="text-lg font-semibold text-gray-900">Welcome Name!</h1>
+              <h1 className="text-lg font-semibold text-gray-900">Welcome {user.role}!</h1>
               <p className="text-xs text-gray-600">Ready to build Course?</p>
             </div>
 
