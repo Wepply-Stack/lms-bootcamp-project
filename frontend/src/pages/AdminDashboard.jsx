@@ -76,13 +76,6 @@ export default function AdminDashboard() {
                 Use this to create <br />
                 Modules and Lessons
               </p>
-
-              <button
-                onClick={handleStartCreating}
-                className="mt-5 w-full rounded-xl bg-transparent py-2 text-xs font-semibold text-[#1f4d45] hover:bg-gray-50"
-              >
-                Start Creating
-              </button>
             </div>
           </div>
         </div>
