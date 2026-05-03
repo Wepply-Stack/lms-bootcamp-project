@@ -46,7 +46,9 @@
       const handleLogout = () => {
         setOpen(false);
         logout();
-        navigate("/", { replace: true });
+        if (!isAuthenticated && !user && !accessToken) {
+          navigate("/", { replace: true });
+        }
       };
 
       return (
