@@ -62,7 +62,7 @@ class LoginView(APIView):
             httponly=True,
             secure=False,
             samesite='Lax',
-            path='/api/auth/token/refresh/'
+            path='/api/auth/'
         )
         return response
     
