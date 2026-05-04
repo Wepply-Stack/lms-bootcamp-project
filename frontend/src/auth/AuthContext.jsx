@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import { loginUser, logoutUser } from "../api/auth";
-import axiosInstance, { setAccessToken } from "../api/axiosInstance";
+import { setAccessToken } from "../api/axiosInstance";
 
 export const AuthContext = createContext();
 
