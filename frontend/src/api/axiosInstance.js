@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
 });
 
 // Store access token in memory and localStorage
-let accessToken = localStorage.getItem("access_token") || null;
+let accessToken = null;
 
 export const setAccessToken = (token) => {
   accessToken = token;
