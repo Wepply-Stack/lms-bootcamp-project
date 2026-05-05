@@ -1,6 +1,6 @@
 import os
 from rest_framework import serializers
-from .models import Course, CourseMaterial
+from .models import Course, Lesson, CourseMaterial
 
 FILE_TYPE = {
     ".pdf" : "pdf",
@@ -42,3 +42,31 @@ class FileUploadSerializer(serializers.Serializer):
             raise serializers.ValidationError("Unsupported file type. Only PDF and certain audio files are allowed")
 
         return file
+class CourseUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = ["title", "description", "status"]
+    
+    def validate_title(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError("Title cannot be empty")
+        return value.strip()
+
+class LessonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lesson
+        fields = [
+            "id",
+            "course",
+            "title",
+            "objective",
+            "order",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["id", "course", "order", "created_at", "updated_at"]
+
+    def validate_title(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError("Title cannot be empty")
+        return value.strip()

@@ -46,3 +46,23 @@ class CourseMaterial(models.Model):
 
     def __str__(self):
         return self.filename
+
+
+class Lesson(models.Model):
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name="lessons",
+    )
+    title = models.CharField(max_length=255)
+    objective = models.TextField(blank=True, default="")
+    order = models.PositiveIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "lessons"
+        ordering = ["order", "created_at"]
+    
+    def __str__(self):
+        return self.title
