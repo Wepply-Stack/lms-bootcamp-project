@@ -153,21 +153,21 @@ export default function AssignCourse() {
               Assign Course
             </h1>
             <p className="mt-1 text-[11px] text-gray-500">
-              Assign courses to employees and track their progress
+              Assign courses and add, remove or edit employees as needed
             </p>
 
             {/* Select Employees */}
             <div className="mt-6">
-              <h2 className="text-[13px] font-semibold text-gray-900">
-                Select Employees
-              </h2>
-              <p className="mt-1 text-[11px] text-gray-500">
-                Select one or more employees to assign the course
-              </p>
-
-              {/* Search employee */}
-              <div className="mt-3">
-                <div className="relative w-40">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-[13px] font-semibold text-gray-900">
+                    Select Employees
+                  </h2>
+                  <p className="mt-1 text-[11px] text-gray-500">
+                    Select one or more employees to assign the course
+                  </p>
+                </div>
+                <div className="relative w-44">
                   <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-gray-400">
                     <svg
                       width="14"
@@ -192,8 +192,8 @@ export default function AssignCourse() {
                   <input
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search Employee"
-                    className="w-full h-7 pl-7 pr-2 text-[11px] rounded bg-gray-100 border border-gray-200 focus:outline-none focus:ring-1 focus:ring-green-600/40"
+                    placeholder="Search"
+                    className="w-full h-8 pl-7 pr-2 text-[11px] rounded bg-gray-100 border border-gray-200 focus:outline-none focus:ring-1 focus:ring-green-600/40"
                   />
                 </div>
               </div>
@@ -203,30 +203,21 @@ export default function AssignCourse() {
                 <table className="w-full border border-gray-200 text-[11px]">
                   <thead className="bg-gray-50">
                     <tr className="text-gray-600">
-                      <th className="w-8 px-2 py-2 border-b border-gray-200">
+                      <th className="w-10 px-2 py-2 border-b border-gray-200">
                         <input type="checkbox" className="h-3 w-3 rounded" />
                       </th>
-                      <th className="px-3 py-2 text-left font-medium border-b border-gray-200">
-                        Employee
+                      <th className="px-3 py-2 text-left font-medium border-b border-gray-200 w-1/2">
+                        Employee Name
                       </th>
                       <th className="px-3 py-2 text-left font-medium border-b border-gray-200">
-                        Email
-                      </th>
-                      <th className="px-3 py-2 text-left font-medium border-b border-gray-200">
-                        Department
-                      </th>
-                      <th className="px-3 py-2 text-left font-medium border-b border-gray-200">
-                        Group
-                      </th>
-                      <th className="px-3 py-2 text-left font-medium border-b border-gray-200">
-                        Assigned Course
+                        Employee Email
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredEmployees.map((emp) => (
                       <tr key={emp.id} className="text-gray-700">
-                        <td className="px-2 py-2 border-b border-gray-200">
+                        <td className="w-10 px-2 py-2 border-b border-gray-200">
                           <input
                             type="checkbox"
                             className="h-3 w-3 rounded"
@@ -234,29 +225,18 @@ export default function AssignCourse() {
                             onChange={() => toggleEmployee(emp.id)}
                           />
                         </td>
-                        <td className="px-3 py-2 border-b border-gray-200">
+                        <td className="px-3 py-2 border-b border-gray-200 w-1/2">
                           {emp.name}
                         </td>
                         <td className="px-3 py-2 border-b border-gray-200">
                           {emp.email}
-                        </td>
-                        <td className="px-3 py-2 border-b border-gray-200">
-                          {emp.department}
-                        </td>
-                        <td className="px-3 py-2 border-b border-gray-200">
-                          {emp.group}
-                        </td>
-                        <td className="px-3 py-2 border-b border-gray-200 text-gray-500">
-                          {emp.assigned?.length
-                            ? emp.assigned[0]
-                            : "No Course Assigned"}
                         </td>
                       </tr>
                     ))}
                     {filteredEmployees.length === 0 && (
                       <tr>
                         <td
-                          colSpan={6}
+                          colSpan={3}
                           className="px-3 py-6 text-center text-gray-500 border-b border-gray-200"
                         >
                           No employees found
@@ -270,16 +250,16 @@ export default function AssignCourse() {
 
             {/* Select Course */}
             <div className="mt-10">
-              <h2 className="text-[13px] font-semibold text-gray-900">
-                Select Course
-              </h2>
-              <p className="mt-1 text-[11px] text-gray-500">
-                Select Course to assign the course
-              </p>
-
-              {/* Search course */}
-              <div className="mt-3">
-                <div className="relative w-40">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-[13px] font-semibold text-gray-900">
+                    Select Course
+                  </h2>
+                  <p className="mt-1 text-[11px] text-gray-500">
+                    Select Course to assign the course
+                  </p>
+                </div>
+                <div className="relative w-44">
                   <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-gray-400">
                     <svg
                       width="14"
@@ -304,8 +284,8 @@ export default function AssignCourse() {
                   <input
                     value={courseSearch}
                     onChange={(e) => setCourseSearch(e.target.value)}
-                    placeholder="Search Course"
-                    className="w-full h-7 pl-7 pr-2 text-[11px] rounded bg-gray-100 border border-gray-200 focus:outline-none focus:ring-1 focus:ring-green-600/40"
+                    placeholder="Search"
+                    className="w-full h-8 pl-7 pr-2 text-[11px] rounded bg-gray-100 border border-gray-200 focus:outline-none focus:ring-1 focus:ring-green-600/40"
                   />
                 </div>
               </div>
