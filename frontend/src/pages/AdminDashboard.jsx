@@ -25,7 +25,7 @@ export default function AdminDashboard() {
   }, []);
 
   const handleEditCourse = (courseId) =>
-    navigate(`/admin/create-course?edit=${courseId}`);
+    navigate(`../create-course?edit=${courseId}`);
   const handleViewCourse = (courseId) =>
     console.log("Viewing course:", courseId);
 
@@ -45,7 +45,7 @@ export default function AdminDashboard() {
             </h2>
           </div>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
-            {courses.map((course) => (
+            {courses.filter((course) => course.status === "Draft").map((course) => (
               <div
                 key={course.id}
                 className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5"
