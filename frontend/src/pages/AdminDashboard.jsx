@@ -5,38 +5,23 @@ import useAuth from "@/auth/useAuth";
 export default function AdminDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
-
-  
-  const courses = [
-    {
-      id: 1,
-      name: "Project Management",
-      status: "Draft",
-      lessons: "8 Lessons",
-      desc: "A project management course equips professionals with essential skills to plan,",
-    },
-    {
-      id: 2,
-      name: "Project Management",
-      status: "Published",
-      lessons: "8 Lessons",
-      desc: "A project management course equips professionals with essential skills to plan,",
-    },
-    {
-      id: 3,
-      name: "Project Management",
-      status: "Draft",
-      lessons: "8 Lessons",
-      desc: "A project management course equips professionals with essential skills to plan,",
-    },
-    {
-      id: 4,
-      name: "Project Management",
-      status: "Draft",
-      lessons: "8 Lessons",
-      desc: "A project management course equips professionals with essential skills to plan,",
-    },
-  ];
+  const [courses, setCourses] = useState([]);
+  useEffect(() => {
+    async function fetchCourses() {
+      try {
+        const response = await fetch("/api/courses");
+        const data = await response.json();
+        if (response.ok) {
+          setCourses(data);
+        } else {
+          console.error("Failed to fetch courses:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    }
+    fetchCourses();
+  }, []);
 
   const handleStartCreating = () => navigate("/admin/create-course");
   const handleEditCourse = (courseId) =>
