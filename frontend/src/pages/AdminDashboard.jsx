@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import useAuth from "@/auth/useAuth";
 
 export default function AdminDashboard() {
@@ -24,7 +24,6 @@ export default function AdminDashboard() {
     fetchCourses();
   }, []);
 
-  const handleStartCreating = () => navigate("/admin/create-course");
   const handleEditCourse = (courseId) =>
     navigate(`/admin/create-course?edit=${courseId}`);
   const handleViewCourse = (courseId) =>
@@ -118,9 +117,11 @@ export default function AdminDashboard() {
               </div>
 
               <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5">
+              <Link to="../create-course">
                 <div className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-full bg-[#d9f99d]">
                   <span className="text-xl font-bold text-[#1f4d45]">+</span>
                 </div>
+              </Link>
 
                 <h3 className="text-center text-sm font-semibold text-gray-900">
                   Create a Course
