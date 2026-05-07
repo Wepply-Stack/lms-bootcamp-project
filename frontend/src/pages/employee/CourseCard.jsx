@@ -11,7 +11,7 @@ export default function CourseCard({ course }) {
   
   <div className="flex justify-between items-start mb-1">
     <p className="text-[10px] text-gray-400">Course</p>
-    <p className="text-[10px] text-[#1F4842]">{course.lessons} Lessons</p>
+    <p className="text-[10px] text-[#1F4842]">{course.numberOfLessons} Lessons</p>
   </div>
 
   <h3 className="text-sm font-semibold text-[#1F4842] mb-1">

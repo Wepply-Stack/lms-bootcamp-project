@@ -28,12 +28,7 @@ const lastCourses = [
 
 function LastCourseCard({ course }) {
   const navigate = useNavigate();
-  const inProgressCourses = assignedCourses.filter(
-    (c) => c.status === "in_progress"
-  );
-
-  const featuredCourse =
-    inProgressCourses[0] || assignedCourses[0];
+  
   return (
     <div className="bg-white rounded-xl p-5 shadow-md border border-gray-100">
       <h3 className="text-lg font-bold text-[#1F4842] mb-3">
@@ -75,14 +70,9 @@ function LastCourseCard({ course }) {
 }
 
 
-export default function EmployeeCourses({ assignedCourses = [] }) {
+export default function EmployeeCourses({ CourseData = [] }) {
   
-const inProgressCourses = assignedCourses.filter(
-    (c) => c.status === "in_progress"
-  );
 
-  const featuredCourse =
-    inProgressCourses[0] || assignedCourses[0];
   return (
     <>
       <h1 className="text-2xl font-bold mb-6 text-[#1F4842]">My Courses</h1>
@@ -121,7 +111,7 @@ const inProgressCourses = assignedCourses.filter(
         )}
 
 
-      {assignedCourses.length === 0 ? (
+      {CourseData.length === 0 ? (
         <div>
           <p className="font-semibold text-[#1F4842]">
             Courses will appear here once assigned by your admin
@@ -139,7 +129,7 @@ const inProgressCourses = assignedCourses.filter(
           </div>
 
           <div className="flex gap-4 overflow-x-auto pb-4">
-            {assignedCourses.map((c) => (
+            {CourseData.map((c) => (
               <CourseCard key={c.id} course={c} />
             ))}
           </div>
