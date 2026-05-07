@@ -1,6 +1,7 @@
 import axios from "axios";
+import env from "../config/env";
 
-const API_URL = "http://127.0.0.1:8000/api/auth/"; // To be set
+const API_URL = env.API_URL;
 
 // Create instance
 const axiosInstance = axios.create({
@@ -8,11 +9,16 @@ const axiosInstance = axios.create({
   withCredentials: true, // send cookies
 });
 
-// Store access token in memory
+// Store access token in memory and localStorage
 let accessToken = null;
 
 export const setAccessToken = (token) => {
   accessToken = token;
+  if (token) {
+    localStorage.setItem("access_token", token);
+  } else {
+    localStorage.removeItem("access_token");
+  }
 };
 
 // Request interceptor (attach token)
@@ -36,12 +42,12 @@ axiosInstance.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url.includes("/login/") &&
-      !originalRequest.includes("/token/refresh/")
+      !originalRequest.url.includes("api/auth/login/") &&
+      !originalRequest.url.includes("api/auth/token/refresh/")
     ) {
       try {
         const res = await axiosInstance.post(
-          `/token/refresh/`,
+          `api/auth/token/refresh/`,
           {},
           { withCredentials: true },
         );

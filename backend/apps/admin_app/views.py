@@ -1,18 +1,19 @@
-from rest_framework import status, viewsets
+from django.db import transaction
+from rest_framework.parsers import JSONParser
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAdmin
 from .serializers import (
-    CourseSerializer, EmployeeProfileSerializer, DashboardSerializer, 
-    CreateEmployeeSerializer, UpdateProfileSerializer, ChangePasswordSerializer
+    EmployeeProfileSerializer, DashboardSerializer, 
+    CreateEmployeeSerializer, UpdateProfileSerializer, ChangePasswordSerializer,
+    EmployeeListSerializer, EmployeeDeleteSerializer
 )
 from apps.auth_app.models import User
+from apps.courses_app.models import Course
 import secrets
 import string
-
-courses_db = []
-course_id_counter = 1
 
 def generate_random_password(length=8):
     """Generate random password with letters, numbers, and special characters"""
@@ -24,49 +25,12 @@ class AdminDashboardView(APIView):
     
     def get(self, request):
         data = {
-            'total_courses': len(courses_db),
+            'total_courses': Course.objects.count(),
             'total_employees': User.objects.filter(role='employee').count(),
             'total_assignments': 0
         }
         serializer = DashboardSerializer(data)
         return Response(serializer.data)
-
-class CourseViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated, IsAdmin]
-    
-    def list(self, request):
-        return Response(courses_db)
-    
-    def create(self, request):
-        global course_id_counter
-        
-        serializer = CourseSerializer(data=request.data)
-        
-        if not serializer.is_valid():
-            return Response(
-                serializer.errors,
-                status=status.HTTP_422_UNPROCESSABLE_ENTITY
-            )
-        
-        if 'title' not in request.data or not request.data['title']:
-            return Response(
-                {'title': ['This field is required']},
-                status=status.HTTP_422_UNPROCESSABLE_ENTITY
-            )
-        
-        course = {
-            'id': course_id_counter,
-            'title': serializer.validated_data['title'],
-            'description': serializer.validated_data.get('description', ''),
-            'status': 'draft',
-            'created_at': '2024-01-01T00:00:00Z',
-            'updated_at': '2024-01-01T00:00:00Z'
-        }
-        
-        courses_db.append(course)
-        course_id_counter += 1
-        
-        return Response(course, status=status.HTTP_201_CREATED)
 
 class UsersView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
@@ -90,30 +54,29 @@ class CreateEmployeeView(APIView):
         
         validated_data = serializer.validated_data
         
-        # Generate password based on option
-        if validated_data['password_option'] == 'lastname':
-            generated_password = validated_data['last_name'].upper()
-        else:  # auto
-            generated_password = generate_random_password()
+        # Split full name into first and last name
+        name_parts = validated_data['name'].strip().split()
+        first_name = name_parts[0]
+        last_name = ' '.join(name_parts[1:])
+        
+        # Always generate auto password
+        generated_password = generate_random_password()
         
         # Create employee user with full profile
         user = User.objects.create_user(
             email=validated_data['email'],
             password=generated_password,
             role='employee',
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-            phone_number=validated_data.get('phone_number', ''),
-            position=validated_data.get('position', '')
+            first_name=first_name,
+            last_name=last_name,
+            phone_number='',
+            position=''
         )
         
         return Response({
             'id': user.id,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
+            'name': f"{user.first_name} {user.last_name}",
             'email': user.email,
-            'phone_number': user.phone_number,
-            'position': user.position,
             'role': user.role,
             'generated_password': generated_password,
             'message': f'Employee created successfully. Password is: {generated_password}'
@@ -190,3 +153,52 @@ class EmployeeChangePasswordView(APIView):
         
         return Response({'message': 'Password changed successfully'})
 
+class EmployeeListView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get(self, request):
+        employees = User.objects.filter(role="employee").order_by("-created_at")
+        serializer = EmployeeListSerializer(employees, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class DeleteEmployeesView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+    parser_classes = [JSONParser]
+
+    def delete(self, request):
+        serializer = EmployeeDeleteSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(
+                serializer.errors,
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY
+            )
+
+        employee_ids = serializer.validated_data["employee_ids"]
+
+        employees = User.objects.filter(id__in=employee_ids, role="employee")
+        found_employee_ids = set(employees.values_list("id", flat=True))
+        requested_employee_ids = set(employee_ids)
+
+        not_found_or_not_employee_ids = sorted(list(requested_employee_ids - found_employee_ids))
+        
+        if not_found_or_not_employee_ids:
+            return Response(
+                {"error": "One or more employee IDs do not exist. Please enter valid employee IDs."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        deleted_employee_ids = sorted(list(found_employee_ids))
+
+        with transaction.atomic():
+            employees.delete()
+
+        return Response(
+            {
+                "message": "Employee deletion processed.",
+                "deleted_employee_ids": deleted_employee_ids,
+                "deleted_count": len(deleted_employee_ids),
+            },
+            status=status.HTTP_200_OK
+        )

@@ -2,8 +2,8 @@
 
 This is a fullstack Learning Management System (LMS) built with:
 
-* **Frontend:** React (Vite) + Shadcn UI (JSX)
-* **Backend:** Django + Django REST Framework (DRF)
+- **Frontend:** React (Vite) + Shadcn UI (JSX)
+- **Backend:** Django + Django REST Framework (DRF)
 
 ---
 
@@ -55,9 +55,9 @@ git checkout -b backend/jane
 
 Make sure you have installed:
 
-* Node.js (**v18, v20 recommended** | v22 works with limitations)
-* Python (3.10+)
-* pip / virtualenv
+- Node.js (**v18, v20 recommended** | v22 works with limitations)
+- Python (3.10+)
+- pip / virtualenv
 
 ---
 
@@ -72,7 +72,7 @@ source venv/bin/activate   # MacOS
 venv\Scripts\activate      # Windows
 
 # Install dependencies
-pip install django djangorestframework django-cors-headers
+pip install -r requirements.txt
 
 # Run migrations
 python manage.py migrate
@@ -206,19 +206,19 @@ http://127.0.0.1:8000/
 
 ## Tech Stack
 
-* React (Vite)
-* Tailwind CSS
-* Shadcn UI (Radix)
-* Django
-* Django REST Framework
+- React (Vite)
+- Tailwind CSS
+- Shadcn UI (Radix)
+- Django
+- Django REST Framework
 
 ---
 
 ## Notes
 
-* Node v22 works but has limitations with some CLI tools
-* Use Node v18/v20 for best compatibility
-* Always install only needed components in Shadcn
+- Node v22 works but has limitations with some CLI tools
+- Use Node v18/v20 for best compatibility
+- Always install only needed components in Shadcn
 
 ---
 
@@ -246,72 +246,82 @@ git push origin your-branch-name
 ## AUTHENTICATION
 
 ### 1. Login (Shared)
+
 **Endpoint:** `POST /api/auth/login`
 
 **Request:**
+
 ```json
 {
-    "email": "admin@example.com",
-    "password": "adminpass123"
+  "email": "admin@example.com",
+  "password": "adminpass123"
 }
 ```
 
 **Response (200 OK):**
+
 ```json
 {
-    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "user": {
-        "id": 1,
-        "email": "admin@example.com",
-        "role": "admin",
-        "created_at": "2026-04-08T10:00:00Z"
-    }
+  "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": 1,
+    "email": "admin@example.com",
+    "role": "admin",
+    "created_at": "2026-04-08T10:00:00Z"
+  }
 }
 ```
 
 ### 2. Forgot Password (Request Reset Link)
+
 **Endpoint:** `POST /api/auth/forgot-password`
 
 **Request:**
+
 ```json
 {
-    "email": "john@example.com"
+  "email": "john@example.com"
 }
 ```
 
 **Response (200 OK):**
+
 ```json
 {
-    "message": "Password reset link generated",
-    "reset_link": "http://localhost:5173/reset-password?token=abc123xyz",
-    "token": "abc123xyz"
+  "message": "Password reset link generated",
+  "reset_link": "http://localhost:5173/reset-password?token=abc123xyz",
+  "token": "abc123xyz"
 }
 ```
 
 ### 3. Reset Password (With Token)
+
 **Endpoint:** `POST /api/auth/reset-password`
 
 **Request:**
+
 ```json
 {
-    "token": "abc123xyz",
-    "new_password": "NewStrong@123",
-    "confirm_password": "NewStrong@123"
+  "token": "abc123xyz",
+  "new_password": "NewStrong@123",
+  "confirm_password": "NewStrong@123"
 }
 ```
 
 **Response (200 OK):**
+
 ```json
 {
-    "message": "Password reset successfully"
+  "message": "Password reset successfully"
 }
 ```
 
 **Error Response (400 Bad Request):**
+
 ```json
 {
-    "confirm_password": ["Passwords do not match"]
+  "confirm_password": ["Passwords do not match"]
 }
 ```
 
@@ -320,259 +330,523 @@ git push origin your-branch-name
 ## ADMIN ENDPOINTS (Requires role=admin)
 
 ### 4. Admin Dashboard
+
 **Endpoint:** `GET /api/admin/dashboard`
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 {
-    "total_courses": 5,
-    "total_employees": 12,
-    "total_assignments": 0
+  "total_courses": 5,
+  "total_employees": 12,
+  "total_assignments": 0
 }
 ```
 
 ### 5. List All Employees
+
 **Endpoint:** `GET /api/users`
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
 ```json
 [
-    {
-        "id": 2,
-        "first_name": "John",
-        "last_name": "Doe",
-        "email": "john@example.com",
-        "phone_number": "+1234567890",
-        "position": "Developer",
-        "role": "employee",
-        "created_at": "2026-04-08T10:00:00Z"
-    },
-    {
-        "id": 3,
-        "first_name": "Jane",
-        "last_name": "Smith",
-        "email": "jane@example.com",
-        "phone_number": "+1987654321",
-        "position": "Designer",
-        "role": "employee",
-        "created_at": "2026-04-08T11:00:00Z"
-    }
+  {
+    "id": 2,
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john@example.com",
+    "phone_number": "+1234567890",
+    "position": "Developer",
+    "role": "employee",
+    "created_at": "2026-04-08T10:00:00Z"
+  },
+  {
+    "id": 3,
+    "first_name": "Jane",
+    "last_name": "Smith",
+    "email": "jane@example.com",
+    "phone_number": "+1987654321",
+    "position": "Designer",
+    "role": "employee",
+    "created_at": "2026-04-08T11:00:00Z"
+  }
 ]
 ```
 
 ### 6. Create Employee
+
 **Endpoint:** `POST /api/admin/employees`
 
 **Headers:**
-```
-Authorization: Bearer <access_token>
-Content-Type: application/json
-```
 
-**Request (Option 1 - Auto generate password):**
-```json
-{
-    "first_name": "John",
-    "last_name": "Doe",
-    "email": "john.doe@example.com",
-    "phone_number": "+1234567890",
-    "position": "Software Developer",
-    "password_option": "auto"
-}
-```
-
-**Request (Option 2 - Lastname as password):**
-```json
-{
-    "first_name": "Jane",
-    "last_name": "Smith",
-    "email": "jane.smith@example.com",
-    "phone_number": "+1987654321",
-    "position": "UI Designer",
-    "password_option": "lastname"
-}
-```
-
-**Response (201 Created):**
-```json
-{
-    "id": 4,
-    "first_name": "John",
-    "last_name": "Doe",
-    "email": "john.doe@example.com",
-    "phone_number": "+1234567890",
-    "position": "Software Developer",
-    "role": "employee",
-    "generated_password": "aB3$xY9@",
-    "message": "Employee created successfully. Password is: aB3$xY9@"
-}
-```
-
-### 7. List All Courses
-**Endpoint:** `GET /api/courses/`
-
-**Headers:**
-```
-Authorization: Bearer <access_token>
-```
-
-**Response (200 OK):**
-```json
-[
-    {
-        "id": 1,
-        "title": "Python Basics",
-        "description": "Learn Python programming",
-        "status": "draft",
-        "created_at": "2026-04-08T10:00:00Z",
-        "updated_at": "2026-04-08T10:00:00Z"
-    },
-    {
-        "id": 2,
-        "title": "Django REST Framework",
-        "description": "Build APIs with DRF",
-        "status": "draft",
-        "created_at": "2026-04-08T11:00:00Z",
-        "updated_at": "2026-04-08T11:00:00Z"
-    }
-]
-```
-
-### 8. Create Course
-**Endpoint:** `POST /api/courses/`
-
-**Headers:**
 ```
 Authorization: Bearer <access_token>
 Content-Type: application/json
 ```
 
 **Request:**
+
 ```json
 {
-    "title": "Advanced Django",
-    "description": "Master Django advanced concepts"
+  "name": "John Doe",
+  "email": "john.doe@example.com"
 }
 ```
 
 **Response (201 Created):**
+
 ```json
 {
-    "id": 3,
-    "title": "Advanced Django",
-    "description": "Master Django advanced concepts",
-    "status": "draft",
-    "created_at": "2026-04-08T12:00:00Z",
-    "updated_at": "2026-04-08T12:00:00Z"
+  "id": 4,
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "role": "employee",
+  "generated_password": "aB3$xY9@",
+  "message": "Employee created successfully. Password is: aB3$xY9@"
 }
 ```
 
 **Error Response (422 Unprocessable Entity):**
+
 ```json
 {
-    "title": ["This field is required"]
+  "email": ["User with this email already exists"],
+  "name": ["Please provide both first and last name"]
 }
 ```
 
----
+### 7. List All Courses
 
-## EMPLOYEE ENDPOINTS (Requires role=employee)
-
-### 9. Get Employee Profile
-**Endpoint:** `GET /api/employee/profile`
+**Endpoint:** `GET /api/courses/`
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 **Response (200 OK):**
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Python Basics",
+    "description": "Learn Python programming",
+    "status": "draft",
+    "created_at": "2026-04-08T10:00:00Z",
+    "updated_at": "2026-04-08T10:00:00Z"
+  },
+  {
+    "id": 2,
+    "title": "Django REST Framework",
+    "description": "Build APIs with DRF",
+    "status": "draft",
+    "created_at": "2026-04-08T11:00:00Z",
+    "updated_at": "2026-04-08T11:00:00Z"
+  }
+]
+```
+
+### 8. Create Course
+
+**Endpoint:** `POST /api/courses/`
+
+**Headers:**
+
+```
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+**Request:**
+
 ```json
 {
-    "id": 2,
-    "first_name": "John",
-    "last_name": "Doe",
-    "email": "john@example.com",
-    "phone_number": "+1234567890",
-    "position": "Software Developer",
-    "role": "employee",
-    "created_at": "2026-04-08T10:00:00Z"
+  "title": "Advanced Django",
+  "description": "Master Django advanced concepts"
 }
 ```
 
-### 10. Update Employee Profile
+**Response (201 Created):**
+
+```json
+{
+  "id": 3,
+  "title": "Advanced Django",
+  "description": "Master Django advanced concepts",
+  "status": "draft",
+  "created_at": "2026-04-08T12:00:00Z",
+  "updated_at": "2026-04-08T12:00:00Z"
+}
+```
+
+**Error Response (422 Unprocessable Entity):**
+
+```json
+{
+  "title": ["This field is required"]
+}
+```
+
+## 9. Update Course / Publish Toggle
+
+**Endpoint:** `PATCH /api/courses/{course_id}/`
+
+**Requires:** `role=admin`
+
+**Headers:**
+
+```
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+**Request:**
+
+```json
+{
+  "status": "published"
+}
+```
+
+To unpublish a course:
+
+```json
+{
+  "status": "draft"
+}
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "id": 1,
+  "title": "Updated Course Title",
+  "description": "Updated course description",
+  "status": "published",
+  "created_at": "2026-04-08T10:00:00Z",
+  "updated_at": "2026-04-08T12:00:00Z"
+}
+```
+
+**Notes:**
+
+- New courses are created as `draft` by default.
+- Valid course status values are `draft` and `published`.
+- Admin users can view all courses.
+- Employee users can only view published courses.
+
+### 10. List Course Lessons
+
+**Endpoint:** `GET /api/courses/{course_id}/lessons/`
+
+**Requires:** authenticated user
+
+**Headers:**
+
+```
+Authorization: Bearer <access_token>
+```
+
+**Response (200 OK):**
+
+```json
+[
+  {
+    "id": 1,
+    "course": 3,
+    "title": "Introduction to Python",
+    "objective": "Understand the course structure",
+    "order": 1,
+    "created_at": "2026-04-08T10:00:00Z",
+    "updated_at": "2026-04-08T10:00:00Z"
+  },
+  {
+    "id": 2,
+    "course": 3,
+    "title": "Data Analysis",
+    "objective": "Handle and analyze data",
+    "order": 2,
+    "created_at": "2026-04-08T10:10:00Z",
+    "updated_at": "2026-04-08T10:10:00Z"
+  }
+]
+```
+
+**Notes:**
+
+- Lessons are returned in ascending `order`.
+- Admin users can view lessons for draft and published courses.
+- Employee users can only view lessons if the course is published.
+
+### 11. Create Lesson
+
+**Endpoint:** `POST /api/courses/{course_id}/lessons/`
+
+**Requires:** `role=admin`
+
+**Headers:**
+
+```
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+**Request:**
+
+```json
+{
+  "title": "Introduction",
+  "objective": "Understand the course structure"
+}
+```
+
+**Response (201 Created):**
+
+```json
+{
+  "id": 1,
+  "course": 3,
+  "title": "Introduction",
+  "objective": "Understand the course structure",
+  "order": 1,
+  "created_at": "2026-04-08T10:00:00Z",
+  "updated_at": "2026-04-08T10:00:00Z"
+}
+```
+
+**Notes:**
+
+- `order` is assigned automatically.
+- New lessons are added to the end of the course.
+
+### 12. Update Lesson
+
+**Endpoint:** `PATCH /api/courses/{course_id}/lessons/{lesson_id}/`
+
+**Requires:** `role=admin`
+
+**Headers:**
+
+```
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+**Request:**
+
+```json
+{
+  "title": "Updated Lesson Title",
+  "objective": "Updated learning objective"
+}
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "id": 1,
+  "course": 3,
+  "title": "Updated Lesson Title",
+  "objective": "Updated learning objective",
+  "order": 1,
+  "created_at": "2026-04-08T10:00:00Z",
+  "updated_at": "2026-04-08T11:00:00Z"
+}
+```
+
+### 13. Delete Lesson
+
+**Endpoint:** `DELETE /api/courses/{course_id}/lessons/{lesson_id}/`
+
+**Requires:** `role=admin`
+
+**Headers:**
+
+```
+Authorization: Bearer <access_token>
+```
+
+**Response:** `204 No Content`
+
+### 14. Reorder Lessons
+
+**Endpoint:** `PATCH /api/courses/{course_id}/lessons/reorder/`
+
+**Requires:** `role=admin`
+
+**Headers:**
+
+```
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+**Request:**
+
+```json
+{
+  "lesson_ids": [3, 1, 2]
+}
+```
+
+**Response (200 OK):**
+
+```json
+[
+  {
+    "id": 3,
+    "course": 3,
+    "title": "Final Quiz",
+    "objective": "",
+    "order": 1,
+    "created_at": "2026-04-08T10:30:00Z",
+    "updated_at": "2026-04-08T11:00:00Z"
+  },
+  {
+    "id": 1,
+    "course": 3,
+    "title": "Introduction to Python",
+    "objective": "",
+    "order": 2,
+    "created_at": "2026-04-08T10:00:00Z",
+    "updated_at": "2026-04-08T11:00:00Z"
+  },
+  {
+    "id": 2,
+    "course": 3,
+    "title": "Data Analysis",
+    "objective": "",
+    "order": 3,
+    "created_at": "2026-04-08T10:10:00Z",
+    "updated_at": "2026-04-08T11:00:00Z"
+  }
+]
+```
+
+**Notes:**
+
+- Send `lesson_ids` in the desired display order.
+- Duplicate lesson IDs are not allowed.
+- All lesson IDs must belong to the selected course.
+
+---
+
+## EMPLOYEE ENDPOINTS (Requires role=employee)
+
+### 15. Get Employee Profile
+
+**Endpoint:** `GET /api/employee/profile`
+
+**Headers:**
+
+```
+Authorization: Bearer <access_token>
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "id": 2,
+  "first_name": "John",
+  "last_name": "Doe",
+  "email": "john@example.com",
+  "phone_number": "+1234567890",
+  "position": "Software Developer",
+  "role": "employee",
+  "created_at": "2026-04-08T10:00:00Z"
+}
+```
+
+### 16. Update Employee Profile
+
 **Endpoint:** `PUT /api/employee/profile`
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 Content-Type: application/json
 ```
 
 **Request (Partial update allowed):**
+
 ```json
 {
-    "first_name": "Jonathan",
-    "phone_number": "+9876543210",
-    "position": "Senior Software Developer"
+  "first_name": "Jonathan",
+  "phone_number": "+9876543210",
+  "position": "Senior Software Developer"
 }
 ```
 
 **Response (200 OK):**
+
 ```json
 {
-    "message": "Profile updated successfully",
-    "profile": {
-        "id": 2,
-        "first_name": "Jonathan",
-        "last_name": "Doe",
-        "email": "john@example.com",
-        "phone_number": "+9876543210",
-        "position": "Senior Software Developer",
-        "role": "employee",
-        "created_at": "2026-04-08T10:00:00Z"
-    }
+  "message": "Profile updated successfully",
+  "profile": {
+    "id": 2,
+    "first_name": "Jonathan",
+    "last_name": "Doe",
+    "email": "john@example.com",
+    "phone_number": "+9876543210",
+    "position": "Senior Software Developer",
+    "role": "employee",
+    "created_at": "2026-04-08T10:00:00Z"
+  }
 }
 ```
 
-### 11. Change Employee Password
+### 17. Change Employee Password
+
 **Endpoint:** `POST /api/employee/change-password`
 
 **Headers:**
+
 ```
 Authorization: Bearer <access_token>
 Content-Type: application/json
 ```
 
 **Request:**
+
 ```json
 {
-    "current_password": "DOE",
-    "new_password": "NewStrong@123"
+  "current_password": "DOE",
+  "new_password": "NewStrong@123"
 }
 ```
 
 **Response (200 OK):**
+
 ```json
 {
-    "message": "Password changed successfully"
+  "message": "Password changed successfully"
 }
 ```
 
 **Error Response (400 Bad Request):**
+
 ```json
 {
-    "current_password": ["Wrong password"]
+  "current_password": ["Wrong password"]
 }
 ```
 
@@ -581,37 +855,38 @@ Content-Type: application/json
 ## ERROR RESPONSES
 
 ### 401 Unauthorized (Invalid/No Token)
+
 ```json
 {
-    "detail": "Authentication credentials were not provided."
+  "detail": "Authentication credentials were not provided."
 }
 ```
 
 ### 403 Forbidden (Wrong Role)
+
 ```json
 {
-    "detail": "You do not have permission to perform this action."
+  "detail": "You do not have permission to perform this action."
 }
 ```
 
 ### 422 Unprocessable Entity (Validation Error)
+
 ```json
 {
-    "email": ["User with this email already exists"],
-    "last_name": ["Lastname is required"]
+  "email": ["User with this email already exists"],
+  "name": ["Please provide both first and last name"]
 }
 ```
 
----
-
 ## STATUS CODES SUMMARY
 
-| Status | Description |
-|--------|-------------|
-| 200 | Success (GET, PUT) |
-| 201 | Created (POST) |
-| 400 | Bad Request |
-| 401 | Unauthorized |
-| 403 | Forbidden |
-| 404 | Not Found |
-| 422 | Validation Error |
+| Status | Description        |
+| ------ | ------------------ |
+| 200    | Success (GET, PUT) |
+| 201    | Created (POST)     |
+| 400    | Bad Request        |
+| 401    | Unauthorized       |
+| 403    | Forbidden          |
+| 404    | Not Found          |
+| 422    | Validation Error   |

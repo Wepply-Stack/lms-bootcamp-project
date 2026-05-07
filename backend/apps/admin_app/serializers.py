@@ -1,37 +1,46 @@
 from rest_framework import serializers
 from apps.auth_app.models import User
 
-class CourseSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    title = serializers.CharField(max_length=255)
-    description = serializers.CharField(required=False, allow_blank=True)
-    status = serializers.CharField(read_only=True)
-    created_at = serializers.DateTimeField(read_only=True)
-    updated_at = serializers.DateTimeField(read_only=True)
-    
-    def validate_title(self, value):
-        if not value or not value.strip():
-            raise serializers.ValidationError("Title cannot be empty")
-        return value.strip()
-
 class EmployeeProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name', 'email', 'phone_number', 'position', 'role', 'created_at']
         read_only_fields = ['id', 'role', 'created_at']
 
+class EmployeeListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone_number', 'position', 'role', 'created_at']
+        read_only_fields = ['id', 'role', 'created_at']
+
 class CreateEmployeeSerializer(serializers.Serializer):
-    first_name = serializers.CharField(max_length=100)
-    last_name = serializers.CharField(max_length=100)
+    name = serializers.CharField(max_length=200)
     email = serializers.EmailField()
-    phone_number = serializers.CharField(max_length=20, required=False, allow_blank=True)
-    position = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    password_option = serializers.ChoiceField(choices=['auto', 'lastname'], default='auto')
     
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError("User with this email already exists")
         return value
+    
+    def validate_name(self, value):
+        """Validate that name contains at least first and last name"""
+        name_parts = value.strip().split()
+        if len(name_parts) < 2:
+            raise serializers.ValidationError("Please provide both first and last name")
+        return value
+
+class EmployeeDeleteSerializer(serializers.Serializer):
+    # Allows multiple/mass deletion
+    employee_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        allow_empty=False
+    )
+
+    def validate_employee_ids(self, value):
+        unique_ids = list(dict.fromkeys(value))
+        if not unique_ids:
+            raise serializers.ValidationError("employee_ids must be a non-empty list.")
+        return unique_ids
 
 class DashboardSerializer(serializers.Serializer):
     total_courses = serializers.IntegerField()
