@@ -1,4 +1,9 @@
+import { useNavigate } from "react-router-dom";
+
+
+
 export default function CourseCard({ course }) {
+  const navigate = useNavigate();
   const isNotStarted = course.status === "not_started";
 
   return (
@@ -40,7 +45,9 @@ export default function CourseCard({ course }) {
     </span>
   </div>
 
-  <button className="w-full rounded-full bg-[#D8F3CA] py-2 text-xs text-[#006064] font-medium">
+  <button className="w-full rounded-full bg-[#D8F3CA] py-2 text-xs text-[#006064] font-medium"
+   onClick={() => navigate("/employee/EmployeeLesson")}
+  >
     {isNotStarted ? "Start" : "Resume"}
   </button>
 </div>

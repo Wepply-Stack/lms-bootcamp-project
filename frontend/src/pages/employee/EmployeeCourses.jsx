@@ -1,4 +1,7 @@
 import CourseCard from "./CourseCard";
+import { useNavigate } from "react-router-dom";
+
+
 
 const lastCourses = [
   {
@@ -21,7 +24,16 @@ const lastCourses = [
   },
 ];
 
+
+
 function LastCourseCard({ course }) {
+  const navigate = useNavigate();
+  const inProgressCourses = assignedCourses.filter(
+    (c) => c.status === "in_progress"
+  );
+
+  const featuredCourse =
+    inProgressCourses[0] || assignedCourses[0];
   return (
     <div className="bg-white rounded-xl p-5 shadow-md border border-gray-100">
       <h3 className="text-lg font-bold text-[#1F4842] mb-3">
@@ -50,9 +62,13 @@ function LastCourseCard({ course }) {
           <p>▤ {course.articles} articles</p>
         </div>
 
-        <button className="bg-[#1F4842] text-white text-xs rounded-md px-6 py-3">
-          ▷ Resume
+        <button className="bg-[#1F4842] text-white text-xs rounded-md px-6 py-3"
+         onClick={() => navigate("/employee/EmployeeLesson")}
+        >
+           ▷ {featuredCourse.progress === 0 ? "Start" : "Resume"}
         </button>
+
+      
       </div>
     </div>
   );
@@ -60,13 +76,13 @@ function LastCourseCard({ course }) {
 
 
 export default function EmployeeCourses({ assignedCourses = [] }) {
-  const inProgressCourses = assignedCourses.filter(
+  
+const inProgressCourses = assignedCourses.filter(
     (c) => c.status === "in_progress"
   );
 
   const featuredCourse =
     inProgressCourses[0] || assignedCourses[0];
-
   return (
     <>
       <h1 className="text-2xl font-bold mb-6 text-[#1F4842]">My Courses</h1>
@@ -83,8 +99,10 @@ export default function EmployeeCourses({ assignedCourses = [] }) {
             </p>
           </div>
 
-          <button className="rounded-xl bg-[#1F4842] px-5 py-2 text-white">
-            ▷ Resume
+          <button className="rounded-xl bg-[#1F4842] px-5 py-2 text-white"
+           onClick={() => navigate("/employee/EmployeeLesson")}
+          >
+            ▷ {featuredCourse.progress === 0 ? "Start" : "Resume"}
           </button>
         </div>
       )}
