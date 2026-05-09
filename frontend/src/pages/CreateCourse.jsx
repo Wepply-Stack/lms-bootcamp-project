@@ -472,9 +472,10 @@ export default function CreateCourse() {
     setCurrentStep((prev) => (prev > 1 ? prev - 1 : prev));
   };
 
-  const handleSaveDraft = async() => {
+  const handleSaveDraft = async(e) => {
     try {
-      await axiosInstance.post("/api/courses", {});
+      e.preventDefault();
+      await axiosInstance.post("/api/courses/", courseData);
       alert("Draft saved successfully!");
     } catch (error) {
       console.error("Error saving draft:", error);

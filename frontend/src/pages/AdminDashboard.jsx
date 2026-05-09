@@ -11,8 +11,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function fetchCourses() {
       try {
-        const response = await axiosInstance.get("/api/courses/");
-        const data = response.data;
+        const response = await axiosInstance.get("api/courses/");
+        const data = await response.data;
         if (response.status === 200) {
           setCourses(data);
         } else {
