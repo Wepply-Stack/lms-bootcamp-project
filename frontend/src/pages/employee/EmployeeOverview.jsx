@@ -17,10 +17,10 @@ export default function EmployeeOverview({ courseData }) {
   const greeting =
     hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
-  const completed = courseData.filter((c) => c.progress === 100).length;
-  const inProgress = courseData.filter((c) => c.progress > 0 && c.progress < 100).length;
-  const notStarted = courseData.length - completed - inProgress;
-  const priorityCourse = courseData[0].lessons[0]; // Workplace Safety (38%) - most recently active
+  const completed = courseData?.filter((c) => c.progress === 100).length;
+  const inProgress = courseData?.filter((c) => c.progress > 0 && c.progress < 100).length;
+  const notStarted = courseData?.length - completed - inProgress;
+  const priorityCourse = courseData?.[0]?.lessons?.[0]; // Workplace Safety (38%) - most recently active
   // console.log(priorityCourse)
   // console.log("Hi")
   return (
