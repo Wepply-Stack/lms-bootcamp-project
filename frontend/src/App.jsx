@@ -63,7 +63,8 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<EmployeeOverview courseData={courseData} />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<EmployeeOverview courseData={courseData} />} />
           <Route path="courses" element={<EmployeeCourses courseData={courseData} />} />
         </Route>
 
