@@ -1,5 +1,6 @@
 export const courseData = [
   {
+    id: 1,
     assigneeEmail: "john.doe@company.com",
     title: "Workplace Safety",
     description:
@@ -9,6 +10,7 @@ export const courseData = [
     dateCreated: "2024-11-01",
     lessons: [
       {
+        id: 1,
         title: "Introduction to safety",
         description: "An overview of core safety principles and why they matter in the workplace.",
         progress: 100,
@@ -16,6 +18,7 @@ export const courseData = [
         duration: "6 min",
       },
       {
+        id: 2,
         title: "Hazard types",
         description: "Identifying and categorising physical, chemical, and biological hazards.",
         progress: 100,
@@ -23,6 +26,7 @@ export const courseData = [
         duration: "5 min",
       },
       {
+        id: 3,
         title: "Emergency procedures",
         description: "Step-by-step guidance on what to do in the event of a workplace emergency.",
         progress: 50,
@@ -30,6 +34,7 @@ export const courseData = [
         duration: "8 min",
       },
       {
+        id: 4,
         title: "PPE guidelines",
         description: "How to select, use, and maintain personal protective equipment correctly.",
         progress: 0,
@@ -37,6 +42,7 @@ export const courseData = [
         duration: "7 min",
       },
       {
+        id: 5,
         title: "Reporting incidents",
         description: "The correct process for logging and escalating workplace incidents.",
         progress: 0,
@@ -44,6 +50,7 @@ export const courseData = [
         duration: "9 min",
       },
       {
+        id: 6,
         title: "Review & summary",
         description: "A final recap of everything covered in the course.",
         progress: 0,
@@ -53,6 +60,7 @@ export const courseData = [
     ],
   },
   {
+    id: 2,
     assigneeEmail: "john.doe@company.com",
     title: "Fire Safety Awareness",
     description:
@@ -62,6 +70,7 @@ export const courseData = [
     dateCreated: "2024-09-15",
     lessons: [
       {
+        id: 1,
         title: "Fire prevention basics",
         description: "Common causes of workplace fires and how to prevent them.",
         progress: 100,
@@ -69,6 +78,7 @@ export const courseData = [
         duration: "5 min",
       },
       {
+        id: 2,
         title: "Evacuation procedures",
         description: "How to safely evacuate a building during a fire emergency.",
         progress: 100,
@@ -76,6 +86,7 @@ export const courseData = [
         duration: "6 min",
       },
       {
+        id: 3,
         title: "Using a fire extinguisher",
         description: "The PASS technique and which extinguisher to use for different fire types.",
         progress: 100,
@@ -83,6 +94,7 @@ export const courseData = [
         duration: "4 min",
       },
       {
+        id: 4,
         title: "Fire warden responsibilities",
         description: "Roles and duties of a designated fire warden in the workplace.",
         progress: 100,
@@ -92,6 +104,7 @@ export const courseData = [
     ],
   },
   {
+    id: 3,
     assigneeEmail: "john.doe@company.com",
     title: "Data Protection & GDPR",
     description:
@@ -101,6 +114,7 @@ export const courseData = [
     dateCreated: "2025-01-10",
     lessons: [
       {
+        id: 1,
         title: "What is GDPR?",
         description: "An introduction to the General Data Protection Regulation and who it applies to.",
         progress: 100,
@@ -108,6 +122,7 @@ export const courseData = [
         duration: "8 min",
       },
       {
+        id: 2,
         title: "Lawful basis for processing",
         description: "The six lawful bases for processing personal data and when to use each.",
         progress: 100,
@@ -115,6 +130,7 @@ export const courseData = [
         duration: "7 min",
       },
       {
+        id: 3,
         title: "Data subject rights",
         description: "Understanding the rights individuals have over their personal data.",
         progress: 100,
@@ -122,6 +138,7 @@ export const courseData = [
         duration: "9 min",
       },
       {
+        id: 4,
         title: "Handling a data breach",
         description: "Steps to take when a data breach occurs and reporting obligations.",
         progress: 50,
@@ -129,6 +146,7 @@ export const courseData = [
         duration: "6 min",
       },
       {
+        id: 5,
         title: "GDPR assessment",
         description: "Test your knowledge of GDPR principles and responsibilities.",
         progress: 0,
@@ -138,6 +156,7 @@ export const courseData = [
     ],
   },
   {
+    id: 4,
     assigneeEmail: "john.doe@company.com",
     title: "Mental Health in the Workplace",
     description:
@@ -147,6 +166,7 @@ export const courseData = [
     dateCreated: "2025-03-20",
     lessons: [
       {
+        id: 1,
         title: "Understanding mental health",
         description: "What mental health means and why it matters in a professional setting.",
         progress: 0,
@@ -154,6 +174,7 @@ export const courseData = [
         duration: "7 min",
       },
       {
+        id: 2,
         title: "Recognising the signs",
         description: "Behavioural and emotional indicators that a colleague may be struggling.",
         progress: 0,
@@ -161,6 +182,7 @@ export const courseData = [
         duration: "6 min",
       },
       {
+        id: 3,
         title: "Having supportive conversations",
         description: "How to approach a sensitive conversation with empathy and without judgement.",
         progress: 0,
@@ -168,6 +190,7 @@ export const courseData = [
         duration: "8 min",
       },
       {
+        id: 4,
         title: "Stress and burnout",
         description: "The difference between stress and burnout, and strategies to manage both.",
         progress: 0,
@@ -175,6 +198,7 @@ export const courseData = [
         duration: "9 min",
       },
       {
+        id: 5,
         title: "Building a healthy team culture",
         description: "Practical steps managers and employees can take to promote wellbeing.",
         progress: 0,
