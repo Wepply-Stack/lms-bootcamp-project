@@ -17,9 +17,9 @@ export default function EmployeeOverview({ courseData }) {
   const greeting =
     hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
-  const completed = 1;
-  const inProgress = 2;
-  const notStarted = 1;
+  const completed = courseData.filter((c) => c.progress === 100).length;
+  const inProgress = courseData.filter((c) => c.progress > 0 && c.progress < 100).length;
+  const notStarted = courseData.length - completed - inProgress;
   const priorityCourse = courseData[0].lessons[0]; // Workplace Safety (38%) - most recently active
   // console.log(priorityCourse)
   // console.log("Hi")
@@ -59,16 +59,15 @@ export default function EmployeeOverview({ courseData }) {
         )}
         {/* Stats */}
         <div className="flex gap-4 mb-8">
-          {[completed, inProgress, notStarted].map((val, i) => (
+          {[[completed, "Completed"], [inProgress, "In Progress"], [notStarted, "Not Started"]].map((val, i) => (
             <div
               key={i}
               className="flex-1 bg-[#D8F3CA] p-5 rounded-2xl shadow-md font-semibold"
             >
               <p className="text-sm text-[#1F4842]">
-                {/* {["Completed", "In progress", "Not started"][i]} */}
-                Infor to be provide
+                {val[1]}
               </p>
-              <h2 className="text-3xl font-bold text-[#1F4842]">{val}</h2>
+              <h2 className="text-3xl font-bold text-[#1F4842]">{val[0]}</h2>
             </div>
           ))}
         </div>
