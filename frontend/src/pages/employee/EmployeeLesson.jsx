@@ -29,18 +29,14 @@ const LessonIcon = ({ status }) => {
       </div>
     );
 
-  return (
-    <div className={`${base} border-[#c8ddd9] text-gray-400`}>
-      ☰
-    </div>
-  );
+  return <div className={`${base} border-[#c8ddd9] text-gray-400`}>☰</div>;
 };
 
 export default function EmployeeLesson({ courseData, setCourseData }) {
   const { courseId } = useParams();
 
   const [course, setCourse] = useState(
-    courseData.find((c) => c.id === parseInt(courseId))
+    courseData.find((c) => c.id === parseInt(courseId)),
   );
 
   const [lessons, setLessons] = useState(course?.lessons || []);
@@ -113,8 +109,8 @@ export default function EmployeeLesson({ courseData, setCourseData }) {
             </h2>
 
             <p className="mt-1 text-sm text-gray-500">
-              {selectedLesson?.id} of {lessons.length} ·{" "}
-              {selectedLesson?.type} · {selectedLesson?.duration}
+              {selectedLesson?.id} of {lessons.length} · {selectedLesson?.type}{" "}
+              · {selectedLesson?.duration}
             </p>
           </div>
 
@@ -184,11 +180,27 @@ export default function EmployeeLesson({ courseData, setCourseData }) {
                   Watch Lesson Video
                 </p>
 
-                <video
-                  controls
-                  className="w-full rounded-xl"
-                  src={selectedLesson.video_url}
-                />
+                {selectedLesson.video_url.includes("youtube.com") ||
+                selectedLesson.video_url.includes("youtu.be") ? (
+                  <iframe
+                    width="100%"
+                    height="400"
+                    className="rounded-xl"
+                    src={selectedLesson.video_url
+                      .replace("watch?v=", "embed/")
+                      .replace("youtu.be/", "youtube.com/embed/")}
+                    title="Lesson Video"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <video
+                    controls
+                    className="w-full rounded-xl"
+                    src={selectedLesson.video_url}
+                  />
+                )}
               </div>
             ) : null}
 

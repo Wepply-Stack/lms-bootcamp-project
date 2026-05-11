@@ -14,7 +14,7 @@ export const courseData = [
         description: "An overview of core safety principles and why they matter in the workplace.",
         status: "todo",
         type: "Video",
-        video_url: "",
+        video_url: "https://youtu.be/dQw4w9WgXcQ?si=a8SVAC7CMvd9jqU4",
         duration: "6 min",
       },
       {
