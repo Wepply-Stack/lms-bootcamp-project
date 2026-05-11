@@ -35,7 +35,7 @@ export default function EmployeeOverview({ courseData }) {
             You have {inProgress} courses in progress · Keep it up!
           </p>
         </div>
-        Continue card
+        <div>Continue card</div>
         {priorityCourse && (
           <div className="mb-6 flex justify-between rounded-2xl bg-white p-6 shadow-md">
             <div>
