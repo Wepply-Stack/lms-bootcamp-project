@@ -40,19 +40,27 @@ export default function EmployeeLesson({ courseData, setCourseData }) {
   );
 
   const [lessons, setLessons] = useState(course?.lessons || []);
-  const [selectedLesson, setSelectedLesson] = useState(lessons[0]);
+  // const [selectedLesson, setSelectedLesson] = useState(lessons[0]);
+  const [selectedLessonId, setSelectedLessonId] = useState(lessons[0]?.id || null);
+  const selectedLesson = lessons.find((l) => l.id === selectedLessonId) || lessons[0];
 
   // modal state
   const [showModal, setShowModal] = useState(false);
 
-  const openLessonModal = (lesson) => {
-    setSelectedLesson(lesson);
+  const openLessonModal = () => {
     setShowModal(true);
   };
 
   const closeLessonModal = () => {
     setShowModal(false);
   };
+
+  function updateLessonStatus(lessonId, newStatus) {
+    const updatedLessons = lessons.map((lesson) =>
+      lesson.id === lessonId ? { ...lesson, status: newStatus } : lesson,
+    );
+    setLessons(updatedLessons);
+  }
 
   return (
     <>
@@ -86,7 +94,7 @@ export default function EmployeeLesson({ courseData, setCourseData }) {
             {lessons.map((lesson) => (
               <div
                 key={lesson.id}
-                onClick={() => setSelectedLesson(lesson)}
+                onClick={() => setSelectedLessonId(lesson.id)}
                 className={`cursor-pointer rounded-xl px-2.5 py-2 text-sm transition-colors flex items-center gap-2.5 ${
                   selectedLesson?.id === lesson.id
                     ? "bg-[#e6f4f0] text-[#1F4842] font-medium"
@@ -126,8 +134,14 @@ export default function EmployeeLesson({ courseData, setCourseData }) {
 
           {/* Action buttons */}
           <div className="flex items-center gap-2.5">
-            <button className="rounded-xl border border-[#a8d5c7] bg-[#e8f5f0] px-4 py-2 text-sm font-medium text-[#1F4842] transition-colors hover:bg-[#d4eee5]">
-              Mark as Completed
+            <button
+              className="rounded-xl border border-[#a8d5c7] bg-[#e8f5f0] px-4 py-2 text-sm font-medium text-[#1F4842] transition-colors hover:bg-[#d4eee5]"
+              onClick={(e) => {
+                e.preventDefault();
+                updateLessonStatus(selectedLesson.id, "done");
+              }}
+            >
+              {selectedLesson?.status === "done" ? "Completed" : "Mark as Completed"} 
             </button>
 
             <button className="rounded-xl border border-gray-300 bg-white px-5 py-2 text-sm text-gray-800 transition-colors hover:bg-gray-50">
@@ -135,7 +149,7 @@ export default function EmployeeLesson({ courseData, setCourseData }) {
             </button>
 
             <button
-              onClick={() => openLessonModal(selectedLesson)}
+              onClick={() => openLessonModal}
               className="ml-auto flex items-center gap-1.5 rounded-xl bg-[#1F4842] px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-[#17352e]"
             >
               ▷ Resume
