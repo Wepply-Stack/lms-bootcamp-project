@@ -15,6 +15,5 @@ urlpatterns = [
     path('admin/employees/delete/', DeleteEmployeesView.as_view(), name='delete-employees'),
     path('employee/profile/', EmployeeProfileView.as_view(), name='employee-profile'),
     path('employee/change-password/', EmployeeChangePasswordView.as_view(), name='employee-change-password'),
-    # path('', include(router.urls)),
     path('users/', UsersView.as_view(), name='users'),
 ]

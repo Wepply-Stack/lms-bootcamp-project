@@ -46,7 +46,7 @@ export default function CourseCard({ course }) {
   </div>
 
   <button className="w-full rounded-full bg-[#D8F3CA] py-2 text-xs text-[#006064] font-medium"
-   onClick={() => navigate("/employee/EmployeeLesson")}
+   onClick={() => navigate("../courses/" + course.id)}
   >
     {isNotStarted ? "Start" : "Resume"}
   </button>
