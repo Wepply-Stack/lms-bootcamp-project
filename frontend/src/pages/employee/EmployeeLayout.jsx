@@ -28,7 +28,7 @@ export default function EmployeeLayout() {
         <div className="flex items-center justify-between rounded-full bg-white px-5 py-[10px]">
           
           <div className="text-lg font-extrabold text-[#212429]">
-            LOGO
+             <img src="./public/Dark-variation-logo.png" alt="Skillminds Logo" className="h-10 w-100%" />
           </div>
 
           <div className="flex gap-2 rounded-full bg-[#EEF2F5] p-1">
