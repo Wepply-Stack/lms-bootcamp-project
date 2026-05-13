@@ -12,25 +12,23 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 // Admin pages
-import AdminDashboard from "./pages/AdminDashboard";
-import CreateCourse from "./pages/CreateCourse";
-import ManageEmployees from "./pages/ManageEmployees";
-import AssignCourse from "./pages/AssignCourse";
-import TrackProgress from "./pages/TrackProgress";
-import Analytics from "./pages/Analytics";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import CreateCourse from "./pages/admin/CreateCourse";
+import ManageEmployees from "./pages/admin/ManageEmployees";
+import AssignCourse from "./pages/admin/AssignCourse";
+import TrackProgress from "./pages/admin/TrackProgress";
+import Analytics from "./pages/admin/Analytics";
 
 // Employee
 import EmployeeLayout from "./pages/employee/EmployeeLayout";
 import EmployeeCourses from "./pages/employee/EmployeeCourses";
 import EmployeeOverview from "./pages/employee/EmployeeOverview";
-import { courseData } from "./pages/employee/courseData.js";
 import EmployeeLesson from "./pages/employee/EmployeeLesson";
 
 // Layouts & Error
 import AdminLayout from "./layout/AdminLayout";
 
 function App() {
-  const [courses, setCourses] = useState([...courseData]);
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<><Outlet /></>} errorElement={<ErrorBoundary />}>
@@ -66,10 +64,10 @@ function App() {
           }
         >
           <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<EmployeeOverview courseData={courses} setCourseData={setCourses} />} />
+          <Route path="dashboard" element={<EmployeeOverview />} />
           <Route path="courses" element={<><Outlet /></>} >
-            <Route index element={<EmployeeCourses courseData={courses} setCourseData={setCourses} />} />
-            <Route path=":courseId" element={<EmployeeLesson courseData={courses} setCourseData={setCourses} />} />
+            <Route index element={<EmployeeCourses />} />
+            <Route path=":courseId" element={<EmployeeLesson />} />
           </Route>
           
         </Route>

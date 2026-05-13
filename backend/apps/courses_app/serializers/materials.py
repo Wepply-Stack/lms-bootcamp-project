@@ -17,8 +17,8 @@ ALLOWED_VIDEO_HOSTS = {
     "youtube.com",
     "www.youtube.com",
     "youtu.be",
+    "vimeo.com",
     "www.vimeo.com",
-    "vimeo.com"
 }
 
 class MaterialSerializer(serializers.ModelSerializer):
@@ -99,6 +99,6 @@ class VideoMeterialSerializer(serializers.Serializer):
         host = parsed.netloc.lower()
 
         if host not in ALLOWED_VIDEO_HOSTS:
-            raise serializers.ValidationError("Unsupported video provider. Only Youtube links are allowed.")
+            raise serializers.ValidationError("Unsupported video provider. Only Youtube and Vimeo links are allowed.")
         
         return value
