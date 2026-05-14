@@ -27,6 +27,7 @@ import EmployeeLesson from "./pages/employee/EmployeeLesson";
 
 // Layouts & Error
 import AdminLayout from "./layout/AdminLayout";
+import Courses from "./pages/admin/Courses";
 
 function App() {
   const router = createBrowserRouter(
@@ -47,7 +48,10 @@ function App() {
         >
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="create-course" element={<CreateCourse />} />
+          <Route path="create-course/:courseId?" element={<CreateCourse />} />
+          <Route path="courses" element={<><Outlet /></>} >
+            <Route index element={<Courses />} />
+          </Route>
           <Route path="assign-course" element={<AssignCourse />} />
           <Route path="manage-employees" element={<ManageEmployees />} />
           <Route path="track-progress" element={<TrackProgress />} />
