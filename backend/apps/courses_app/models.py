@@ -42,6 +42,38 @@ class Lesson(models.Model):
     def __str__(self):
         return self.title
 
+class LessonProgress(models.Model):
+    STATUS_CHOICES = [
+        ("not_started", "Not Started"),
+        ("complete", "Complete"),
+    ]
+
+    employee = models.ForeignKey(
+        "auth_app.User",
+        on_delete=models.CASCADE,
+        related_name="lesson_progress"
+    )
+    lesson = models.ForeignKey(
+        Lesson,
+        on_delete=models.CASCADE,
+        related_name="progress_records"
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="not_started"
+    )
+    started_at = models.DateTimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "lesson_progress"
+        unique_together = ("employee", "lesson")
+
+    def __str__(self):
+        return f"{self.employee.email} -> {self.lesson.title} ({self.status})"
+
 class Material(models.Model):
     MATERIAL_TYPE_CHOICES = [
         ("pdf", "PDF"),

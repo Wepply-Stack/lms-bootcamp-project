@@ -4,10 +4,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from apps.admin_app.permissions import IsAdmin
-from apps.courses_app.models import Course, CourseAssignment, Lesson
-from apps.courses_app.serializers import LessonSerializer
+from apps.courses_app.models import Course, CourseAssignment, Lesson, LessonProgress
+from apps.courses_app.serializers.lessons import LessonSerializer, LessonProgressSerializer
+
 
 class LessonViewSet(viewsets.ViewSet):
     def get_permissions(self):
@@ -33,6 +35,65 @@ class LessonViewSet(viewsets.ViewSet):
     def _ordered_lessons(self, course):
         return course.lessons.order_by("order", "created_at", "id")
     
+    def _mark_course_assignment_in_progress(self, employee, course):
+        assignment = CourseAssignment.objects.filter(
+            employee=employee,
+            course=course,
+            is_active=True
+        ).first()
+
+        if not assignment:
+            return
+
+        if assignment.progress_status == "not_started":
+            assignment.progress_status = "in_progress"
+            assignment.started_at = timezone.now()
+            assignment.completed_at = None
+            assignment.save(update_fields=["progress_status", "started_at", "completed_at", "updated_at"])
+
+
+    def _sync_course_assignment_completion(self, employee, course):
+        assignment = CourseAssignment.objects.filter(
+            employee=employee,
+            course=course,
+            is_active=True
+        ).first()
+
+        if not assignment:
+            return
+
+        total_lessons = Lesson.objects.filter(course=course).count()
+
+        # NOT NEEDED, NO MORE 0 LESSON COURSES
+        if total_lessons == 0:
+            assignment.progress_status = "not_started"
+            assignment.started_at = None
+            assignment.completed_at = None
+            assignment.save(update_fields=["progress_status", "started_at", "completed_at", "updated_at"])
+            return
+
+        done_lessons = LessonProgress.objects.filter(
+            employee=employee,
+            lesson__course=course,
+            status="done"
+        ).count()
+
+        if done_lessons == total_lessons:
+            if not assignment.started_at:
+                assignment.started_at = timezone.now()
+            assignment.progress_status = "completed"
+            assignment.completed_at = timezone.now()
+            assignment.save(update_fields=["progress_status", "started_at", "completed_at", "updated_at"])
+            return
+
+        if done_lessons > 0 and assignment.progress_status == "not_started":
+            assignment.progress_status = "in_progress"
+            if not assignment.started_at:
+                assignment.started_at = timezone.now()
+            assignment.completed_at = None
+            assignment.save(update_fields=["progress_status", "started_at", "completed_at", "updated_at"])
+
+
     # Published courses are view only, including lesson changes
     def _ensure_draft_course(self, course):
         if course.status == "published":
@@ -44,12 +105,14 @@ class LessonViewSet(viewsets.ViewSet):
     
     def list(self, request, course_id=None):
         course = self._get_viewable_course(request, course_id)
+        self._mark_course_assignment_in_progress(request.user, course)
         serializer = LessonSerializer(self._ordered_lessons(course), many=True)
         return Response(serializer.data)
     
     def retrieve(self, request, course_id=None, pk=None):
         course = self._get_viewable_course(request, course_id)
         lesson = get_object_or_404(Lesson, pk=pk, course=course)
+        self._mark_course_assignment_in_progress(request.user, course)
 
         lessons = list(self._ordered_lessons(course))
         current_index = [item.id for item in lessons].index(lesson.id)
@@ -162,3 +225,40 @@ class LessonViewSet(viewsets.ViewSet):
         lesson = get_object_or_404(Lesson, pk=pk, course=course)
         lesson.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    def complete(self, request, course_id=None, pk=None):
+        course = self._get_viewable_course(request, course_id)
+
+        if request.user.role != "employee":
+            return Response(
+                {"error": "Only employees can mark lessons as completed."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        lesson = get_object_or_404(Lesson, pk=pk, course=course)
+
+        assignment = CourseAssignment.objects.filter(
+            employee=request.user,
+            course=course,
+            is_active=True,
+        ).first()
+
+        if not assignment:
+            raise PermissionDenied("You do not have permission to complete lessons for this course.")
+
+        self._mark_course_assignment_in_progress(request.user, course)
+
+        LessonProgress.objects.update_or_create(
+            employee=request.user,
+            lesson=lesson,
+            defaults={
+                "status": "done",
+            },
+        )
+
+        self._sync_course_assignment_completion(request.user, course)
+
+        return Response(
+            {"message": "Lesson marked as done."},
+            status=status.HTTP_200_OK,
+        )
