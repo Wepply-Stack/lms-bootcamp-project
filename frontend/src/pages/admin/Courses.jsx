@@ -112,7 +112,7 @@ function Courses() {
                     <>
                       <button
                         onClick={() =>
-                          navigate(`/admin/courses/${course.id}/edit`)
+                          navigate(`../create-course/?edit=${course.id}`)
                         }
                         className="bg-blue-500 hover:bg-blue-600 text-white text-[10px] px-4 h-[28px] rounded-[4px] mr-2"
                       >
