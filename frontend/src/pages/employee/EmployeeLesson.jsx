@@ -42,19 +42,16 @@ function getFullUrl(path) {
   return `${env.API_URL}${path}`;
 }
 
-const getMaterialDownloadUrl = (material) => {
-  if (!material?.lesson || !material?.id) return "";
-  return `${env.API_URL}/api/lessons/${material.lesson}/materials/${material.id}/download/`;
-};
-
 const getAccessToken = () => {
   return localStorage.getItem("access_token");
 };
 
-const handleProtectedDownload = async (material) => {
+// Updated download handler for Cloudinary
+const handleDownload = async (material) => {
   try {
-    const token = localStorage.getItem("access_token");
+    const token = getAccessToken();
 
+    // Step 1: Get the download URL from your backend
     const response = await fetch(
       `${env.API_URL}/api/lessons/${material.lesson}/materials/${material.id}/download/`,
       {
@@ -69,15 +66,76 @@ const handleProtectedDownload = async (material) => {
     }
 
     const data = await response.json();
-    window.location.href = data.download_url;
+    
+    if (!data.download_url) {
+      throw new Error("No download URL received");
+    }
+
+    // Step 2: Force download using the Cloudinary URL
+    // For Cloudinary URLs, we need to add the download flag
+    let downloadUrl = data.download_url;
+    
+    // If it's a Cloudinary URL, ensure it has the attachment flag for forced download
+    if (downloadUrl.includes('cloudinary.com')) {
+      // Add fl_attachment parameter if not present
+      if (!downloadUrl.includes('fl_attachment')) {
+        if (downloadUrl.includes('?')) {
+          downloadUrl += '&fl_attachment=true';
+        } else {
+          downloadUrl += '?fl_attachment=true';
+        }
+      }
+    }
+
+    // Create a temporary link to trigger download
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = material.filename || 'download';
+    link.target = '_blank'; // Fallback if download attribute doesn't work
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
   } catch (error) {
-    console.error(error);
-    alert("Unable to download file.");
+    console.error('Download error:', error);
+    alert("Unable to download file. Please try again.");
+  }
+};
+
+// Updated audio handler
+const getAudioSource = async (material) => {
+  try {
+    const token = getAccessToken();
+
+    const response = await fetch(
+      `${env.API_URL}/api/lessons/${material.lesson}/materials/${material.id}/download/`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch audio link: ${response.status}`);
+    }
+
+    const data = await response.json();
+    
+    if (!data.download_url) {
+      throw new Error("No audio URL received");
+    }
+
+    // Cloudinary URLs work directly as audio sources
+    return data.download_url;
+  } catch (error) {
+    console.error("Audio load error:", error);
+    throw error;
   }
 };
 
 const toggleLessonComplete = async (courseId, lessonId) => {
-  const token = localStorage.getItem("access_token");
+  const token = getAccessToken();
 
   const response = await fetch(
     `${env.API_URL}/api/courses/${courseId}/lessons/${lessonId}/complete/`,
@@ -98,6 +156,7 @@ const toggleLessonComplete = async (courseId, lessonId) => {
 
 export default function EmployeeLesson() {
   const [audioSrcMap, setAudioSrcMap] = useState({});
+  const [audioLoadingMap, setAudioLoadingMap] = useState({});
   const { courseId } = useParams();
   const navigate = useNavigate();
 
@@ -117,7 +176,7 @@ export default function EmployeeLesson() {
   };
 
   const fetchLessons = async () => {
-    const token = localStorage.getItem("access_token");
+    const token = getAccessToken();
 
     const response = await fetch(`${env.API_URL}/api/courses/${courseId}/lessons/`, {
       headers: {
@@ -149,7 +208,7 @@ export default function EmployeeLesson() {
 
   const fetchLessonMaterials = async (lessonId) => {
     try {
-      const token = localStorage.getItem("access_token");
+      const token = getAccessToken();
 
       const response = await fetch(`${env.API_URL}/api/lessons/${lessonId}/materials/`, {
         headers: {
@@ -171,31 +230,20 @@ export default function EmployeeLesson() {
 
   const loadAudioSource = async (material) => {
     try {
-      if (audioSrcMap[material.id]) return;
+      // Set loading state for this specific audio
+      setAudioLoadingMap(prev => ({ ...prev, [material.id]: true }));
 
-      const token = getAccessToken();
-
-      const response = await fetch(getMaterialDownloadUrl(material), {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const rawText = await response.text();
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch audio link: ${response.status}`);
-      }
-
-      const data = JSON.parse(rawText);
-
+      const audioUrl = await getAudioSource(material);
+      
       setAudioSrcMap((prev) => ({
         ...prev,
-        [material.id]: data.download_url,
+        [material.id]: audioUrl,
       }));
     } catch (error) {
       console.error("audio load error:", error);
-      alert("Unable to load audio.");
+      alert("Unable to load audio. Please try again.");
+    } finally {
+      setAudioLoadingMap(prev => ({ ...prev, [material.id]: false }));
     }
   };
 
@@ -229,6 +277,8 @@ export default function EmployeeLesson() {
   useEffect(() => {
     if (selectedLesson) {
       setIsPlaying(false);
+      setAudioSrcMap({}); // Clear audio sources when changing lessons
+      setAudioLoadingMap({});
       fetchLessonMaterials(selectedLesson.id);
     } else {
       setMaterials([]);
@@ -499,7 +549,7 @@ export default function EmployeeLesson() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => handleProtectedDownload(material)}
+                    onClick={() => handleDownload(material)}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#1F4842] text-white text-sm hover:bg-[#17352e] transition-colors"
                   >
                     <FileDown className="w-4 h-4" />
@@ -534,15 +584,16 @@ export default function EmployeeLesson() {
                       <button
                         type="button"
                         onClick={() => loadAudioSource(material)}
-                        className="mb-3 px-3 py-2 rounded-lg bg-[#1F4842] text-white text-sm hover:bg-[#17352e] transition-colors"
+                        disabled={audioLoadingMap[material.id]}
+                        className="mb-3 px-3 py-2 rounded-lg bg-[#1F4842] text-white text-sm hover:bg-[#17352e] transition-colors disabled:opacity-50"
                       >
-                        Load Audio
+                        {audioLoadingMap[material.id] ? "Loading..." : "Load Audio"}
                       </button>
                     )}
 
                     {audioSrcMap[material.id] && (
                       <audio controls className="w-full">
-                        <source src={audioSrcMap[material.id]} type="audio/mpeg" />
+                        <source src={audioSrcMap[material.id]} />
                         Your browser does not support the audio element.
                       </audio>
                     )}
