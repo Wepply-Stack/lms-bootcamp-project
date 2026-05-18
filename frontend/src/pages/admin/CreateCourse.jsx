@@ -113,7 +113,6 @@ export default function CreateCourse() {
 
   useEffect(() => {
     if (editCourseId) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       loadExistingCourse(editCourseId);
     }
   }, [loadExistingCourse, editCourseId]);

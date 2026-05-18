@@ -46,11 +46,11 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route index element={<Navigate to="courses" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="courses" element={<><Outlet /></>} >
             <Route index element={<Courses />} />
-            <Route path="create-course/:courseId?" element={<CreateCourse />} />
+            <Route path="create-course" element={<CreateCourse />} />
           </Route>
           <Route path="assign-course" element={<AssignCourse />} />
           <Route path="manage-employees" element={<ManageEmployees />} />

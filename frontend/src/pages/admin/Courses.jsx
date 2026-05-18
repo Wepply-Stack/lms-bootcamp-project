@@ -107,7 +107,7 @@ function Courses() {
               </div>
 
               <button
-                onClick={() => navigate("./create-course")}
+                onClick={() => navigate("/admin/courses/create-course")}
                 className="h-8 px-6 rounded bg-[#0f3d3a] text-white text-[11px] font-medium hover:bg-[#0c312f] transition-all duration-200 hover:shadow-md active:scale-95"
               >
                 + Create New Course
@@ -170,13 +170,13 @@ function Courses() {
                                 <MoreVertical className="w-4 h-4 text-gray-600" />
                               </button>
                               {openDropdownId === course.id && (
-                                <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-10 animate-in fade-in zoom-in-95 duration-200">
+                                <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                                   <button
                                     onClick={() => {
-                                      navigate(`./create-course/?edit=${course.id}`);
+                                      navigate(`/admin/courses/create-course?edit=${course.id}`);
                                       setOpenDropdownId(null);
                                     }}
-                                    className="w-full px-4 py-2 text-left text-[11px] text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors duration-150"
+                                    className="w-full px-4 py-2 text-left text-[11px] text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                                   >
                                     <Edit className="w-3 h-3" />
                                     Edit
@@ -192,7 +192,7 @@ function Courses() {
                                           setOpenDropdownId(null);
                                         });
                                     }}
-                                    className="w-full px-4 py-2 text-left text-[11px] text-red-600 hover:bg-gray-50 flex items-center gap-2 transition-colors duration-150"
+                                    className="w-full px-4 py-2 text-left text-[11px] text-red-600 hover:bg-gray-50 flex items-center gap-2"
                                   >
                                     <Trash2 className="w-3 h-3" />
                                     Delete
@@ -204,7 +204,7 @@ function Courses() {
                         )}
                         {course.status === "published" && (
                           <button
-                            onClick={() => navigate(`./create-course/?edit=${course.id}`)}
+                            onClick={() => navigate(`/admin/courses/create-course?edit=${course.id}`)}
                             className="h-8 px-4 rounded bg-blue-50 text-blue-700 text-[11px] font-medium hover:bg-blue-100 transition-all duration-200"
                           >
                             View Course
@@ -235,8 +235,8 @@ function Courses() {
                           </svg>
                           <span>No courses available.</span>
                         </div>
-                      </td>
-                    </tr>
+                       </td>
+                     </tr>
                   )}
                 </tbody>
               </table>
